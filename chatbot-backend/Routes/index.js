@@ -1,6 +1,6 @@
 const { Router } = require('express');
-const AppController = require('../controllers/AppController');
-const AuthenticationController = require('../controllers/AuthenticationController');
+const AppController = require('../Controllers/AppController');
+const AuthenticationController = require('../Controllers/AuthenticationController');
 const router = Router();
 
 router.get("/", AppController.test);
