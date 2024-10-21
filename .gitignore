@@ -12,7 +12,8 @@ node_modules
 dist
 dist-ssr
 *.local
-Backend/.env
+chatbot-backend/.env
+chatbot-frontend/.env
 
 # Editor directories and files
 .vscode/*
