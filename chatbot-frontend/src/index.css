@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+nav {
+  background-color: #007BFF;
+  padding: 1rem;
+  width: 100%;
+}
+
+nav h1 {
+  color: white;
+  display: inline;
+}
+
+nav a {
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+}
+
+.hero {
+  text-align: center;
+  padding: 80px 20px;
+  background-color: #f5f5f5;
+}
+
+.hero h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.hero a {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.features {
+  display: flex;
+  justify-content: space-around;
+  padding: 50px;
+}
+
+.features div {
+  background-color: #f9f9f9;
+  padding: 20px;
+  width: 30%;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.signup {
+  background-color: #eeeeee;
+  padding: 40px;
+  text-align: center;
+}
+
+.signup form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer {
+  background-color: #007BFF;
+  color: white;
+  text-align: center;
+  padding: 10px;
+}
+
+
+/* Reduce the font size for table rows */
+.ant-table td {
+  font-size: 12px; /* Adjust the size as needed */
+}
+
+/* Reduce the font size for table headers */
+.ant-table th {
+  font-size: 14px; /* Adjust the size for header titles */
+}
+
+/* Optionally reduce the padding for a more compact table */
+.ant-table td, .ant-table th {
+  padding: 8px; /* Adjust the padding for your needs */
+}
