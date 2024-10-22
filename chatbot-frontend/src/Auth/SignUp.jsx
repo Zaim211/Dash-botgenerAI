@@ -52,8 +52,7 @@ const SignUp = () => {
   };
 
   return (
-    <section className="relative w-full bg-white bg-no-repeat bg-cover bg-center" 
-    style={{ backgroundColor: "#1C1C1C"}}>
+    <section className="relative w-full min-h-screen bg-[#1C1C1C]">
       <div className="absolute inset-0 bg-black opacity-70"></div>
       <div className="flex justify-center items-center px-6 py-8 mx-auto h-full">
         <div className="bg-black rounded-lg shadow-md p-6 space-y-4 md:space-y-6 sm:p-8 z-10 relative" style={{ maxWidth: "500px", width: "100%" }}>
