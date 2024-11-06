@@ -93,10 +93,67 @@ nav a {
 
 /* Reduce the font size for table headers */
 .ant-table th {
-  font-size: 14px; /* Adjust the size for header titles */
+  font-size: 12px; /* Adjust the size for header titles */
 }
 
 /* Optionally reduce the padding for a more compact table */
 .ant-table td, .ant-table th {
   padding: 8px; /* Adjust the padding for your needs */
 }
+
+.leads-container {
+  padding: 24px;
+  background-color: #f4f4f4;
+}
+
+.ant-table {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ant-table-thead > tr > th {
+  background-color: #fafafa;
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.ant-table-tbody > tr > td {
+  text-align: center;
+}
+
+.ant-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* Custom styles for table */
+.custom-table .ant-table-thead > tr > th {
+  background-color: #2563eb; /* Tailwind's blue-600 */
+  color: #fff;
+  font-weight: bold;
+}
+
+.custom-table .ant-table-tbody > tr > td {
+  background-color: #f9fafb; /* Tailwind's gray-50 */
+  color: #4b5563; /* Tailwind's gray-700 */
+  padding: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.custom-table .ant-table-tbody > tr:hover > td {
+  background-color: #e0f2fe; /* Tailwind's light blue-100 */
+}
+
+.custom-table .ant-pagination-item-active {
+  border-color: #2563eb;
+}
+
+.custom-table .ant-pagination-item-active a {
+  color: #2563eb;
+  font-weight: bold;
+}
+

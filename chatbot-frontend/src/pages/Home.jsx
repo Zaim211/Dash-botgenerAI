@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import Sidebar from "./Sidebar";
-import Navbar from "./Navbar";
-import DashboardCards from "./DashboardCard";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
+import DashboardCards from "../components/DashboardCard";
 import { jwtDecode } from "jwt-decode";
 
-const Dashboard = () => {
+
+const Home = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const token = localStorage.getItem("token");
   const decodedToken = token ? jwtDecode(token) : "";
@@ -15,32 +16,25 @@ const Dashboard = () => {
     setIsAuthenticated(false);
   };
   return (
-    <div className="flex">
-      {/* Sidebar */}
-      <Sidebar />
-
-      {/* Main content */}
-      <div className="flex-1 p-2 border rounded-sm border-black">
-        {/* Pass props to Navbar */}
-        <Navbar
+    <div className="flex-1 px-4">
+       <div className="mb-12">
+       <Navbar
           isAuthenticated={isAuthenticated}
           user={user}
           onSignOut={handleSignOut}
         />
-        <div className="flex justify-center mt-4">
-          <div
-            className="border-b border-gray-300"
-            style={{ width: "96%", height: "1px" }}
-          ></div>
-        </div>
-
-        <div className="p-6 bg-white min-h-screen">
+       </div>
+      {/* Main content */}
+      <div className="flex-1  border rounded-sm">
+        {/* Pass props to Navbar */}
+       
+        <div className="p-4 rounded-md bg-white ">
           <h2 className="text-2xl font-bold">Overview</h2>
           <DashboardCards />
-        </div>
+        </div> 
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default Home;

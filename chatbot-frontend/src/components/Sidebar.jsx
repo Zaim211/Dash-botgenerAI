@@ -54,137 +54,117 @@ const SideBar = () => {
   const items = [
     {
       key: "/",
-      icon: <FontAwesomeIcon icon={faHome} />,
+      icon: <FontAwesomeIcon icon={faHome} style={{ fontSize: "25px" }}/>,
       label: "Dashboard",
     },
     {
+      key: "/leads",
+      icon: <FontAwesomeIcon icon={faUserTie} style={{ fontSize: "25px" }}/>,
+      label: "Total des Leads",
+    },
+    {
       key: "/websites",
-      icon: <FontAwesomeIcon icon={faGlobe} />,
+      icon: <FontAwesomeIcon icon={faGlobe} style={{ fontSize: "25px" }}/>,
       label: "Websites",
   
       children: [
         {
           key: "/add-website",
           label: "Add New Website",
-          icon: <FontAwesomeIcon icon={faPlusCircle} />,
+          icon: <FontAwesomeIcon icon={faPlusCircle} style={{ fontSize: "25px" }}/>,
         },
         {
           key: "/list-websites",
           label: "Website List",
-          icon: <FontAwesomeIcon icon={faList} />,
+          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
         },
         {
           key: "/website-data",
           label: "Website Data",
-          icon: <FontAwesomeIcon icon={faChartBar} />,
+          icon: <FontAwesomeIcon icon={faChartBar} style={{ fontSize: "25px" }}/>,
         },
         {
           key: "/website-analytics",
           label: "Analytics",
-          icon: <FontAwesomeIcon icon={faChartLine} />,
+          icon: <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "25px" }}/>,
         },
         {
           key: "/assign-chatbot",
           label: "Assign Chatbot to Website",
-          icon: <FontAwesomeIcon icon={faUserTag} />,
+          icon: <FontAwesomeIcon icon={faUserTag} style={{ fontSize: "25px" }}/>,
         },
       ],
     },
   
     {
       key: "/chatbots",
-      icon: <FontAwesomeIcon icon={faComments} />,
+      icon: <FontAwesomeIcon icon={faComments} style={{ fontSize: "25px" }}/>,
       label: "Chatbots",
   
       children: [
         {
           key: "/list-chatbots",
           label: "Chatbot List",
-          icon: <FontAwesomeIcon icon={faList} />,
+          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
         },
         {
           key: "/manage-chatbot",
           label: "Manage Chatbot",
-          icon: <FontAwesomeIcon icon={faCogs} />,
+          icon: <FontAwesomeIcon icon={faCogs} style={{ fontSize: "25px" }}/>,
         },
         {
           key: "/performance",
           label: "Chatbot Performance",
-          icon: <FontAwesomeIcon icon={faTachometerAlt} />,
+          icon: <FontAwesomeIcon icon={faTachometerAlt} style={{ fontSize: "25px" }}/>,
         },
       ],
     },
   
     {
       key: "/integrations",
-      icon: <FontAwesomeIcon icon={faProjectDiagram} />,
+      icon: <FontAwesomeIcon icon={faProjectDiagram} style={{ fontSize: "25px" }}/>,
       label: "Integrations",
   
       children: [
         {
           key: "/add-integration",
           label: "Add New Integration",
-          icon: <FontAwesomeIcon icon={faPlusCircle} />,
+          icon: <FontAwesomeIcon icon={faPlusCircle} style={{ fontSize: "25px" }}/>,
         },
         {
           key: "/list-integrations",
           label: "Integration List",
-          icon: <FontAwesomeIcon icon={faList} />,
+          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
         },
       ],
     },
   
-    // {
-    //   key: "/contracts",
-    //   icon: <FontAwesomeIcon icon={faFileContract} />,
-    //   label: "Contracts",
-    // },
-    // {
-    //   key: "/proposals",
-    //   icon: <FontAwesomeIcon icon={faFileInvoiceDollar} />,
-    //   label: "Proposals",
-    // },
-    // {
-    //   key: "/validated-contracts",
-    //   icon: <FontAwesomeIcon icon={faCheckCircle} />,
-    //   label: "Validated Contracts",
-    // },
-  
-    {
-      key: "/calendar",
-      icon: <FontAwesomeIcon icon={faCalendarAlt} />,
-      label: "Schedule",
-    },
+   
     {
       key: "/admins",
-      icon: <FontAwesomeIcon icon={faUserShield} />,
+      icon: <FontAwesomeIcon icon={faUserShield} style={{ fontSize: "25px" }}/>,
       label: "Admins",
   
       children: [
         {
           key: "/list-admins",
           label: "Admin List",
-          icon: <FontAwesomeIcon icon={faList} />,
+          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
         },
       ],
     },
   
-    {
-      key: "/sales-reps",
-      icon: <FontAwesomeIcon icon={faUserTie} />,
-      label: "Sales Representatives",
-    },
   ];
   
   const itemsCenter = [
     {
       key: "/settings",
-      icon: <SettingOutlined />,
+      icon: <SettingOutlined style={{ fontSize: "25px" }}/>,
       label: "Settings",
     },
     {
       key: "/help",
-      icon: <FontAwesomeIcon icon={faQuestionCircle} />,
+      icon: <FontAwesomeIcon icon={faQuestionCircle} style={{ fontSize: "25px" }}/>,
       label: "Help",
     },
   ];
@@ -196,7 +176,6 @@ const SideBar = () => {
     }
     return true;
   });
-  console.log("filteredItems", filteredItems);
 
   const filteredItemsCenter = itemsCenter.filter((item) => {
     if (item.role) {
@@ -204,9 +183,11 @@ const SideBar = () => {
     }
     return true;
   });
-  console.log("filteredItemsCenter", filteredItemsCenter);
-
-  const isActive = (path) => location.pathname === path;
+  // const isActive = (path) => location.pathname === path;
+  const isActive = (path) => {
+    if (location.pathname === path) return true; // Exact match
+    return path !== "/" && location.pathname.startsWith(path); // Check if path is a prefix of current pathname
+  };
 
   return (
   
@@ -214,29 +195,12 @@ const SideBar = () => {
     trigger={null}
     collapsible
     collapsed={collapsed}
-    className="bg-black w-full"
+    className="bg-white w-full"
+    width={240}
   >
-    <div className="flex justify-between w-full items-center mt-2">
-      <Link to="/" className="flex px-2 flex-start mt-2">
-        {!collapsed && (
-          <img
-            src={logo} alt="logo"
-            className="w-[100px] h-[50px] mt-2"
-          />
-        )}
-      </Link>
-      <Button
-        className="flex justify-end"
-        type="text"
-        icon={collapsed ? <MenuUnfoldOutlined style={{ fontSize: "20px", cursor: "pointer" }} /> : <MenuFoldOutlined style={{ fontSize: "20px" }} />}
-        onClick={onClickHandler}
-        style={{ fontSize: "30px", marginRight: "20px", color: "#fff", background: "transparent", border: "none", cursor: "pointer", outline: "none" }}
-      />
-    </div>
-
     {!collapsed && (
       <Menu
-        className="mt-12 bg-black font-bold text-white"
+        className=" font-bold gap-6 text-gray-600 mt-2 text-md w-full"
         theme="white"
         mode="inline"
         selectedKeys={[location.pathname]}
@@ -248,7 +212,7 @@ const SideBar = () => {
               key={item.key}
               icon={item.icon}
               title={item.label}
-              className="hover:bg-black hover:text-white"
+              className="hover:bg-white  hover:text-gray-600 w-full"
             >
               {item.children.map((child) => (
                 <Menu.Item
@@ -256,8 +220,8 @@ const SideBar = () => {
                   icon={child.icon}
                   className={`${
                     isActive(child.key)
-                      ? "hover:bg-black text-white rounded-full"
-                      : "hover:bg-orange-700 hover:text-white"
+                      ? "hover:bg-white  text-white rounded-full w-full"
+                      : "hover:bg-purple-900 hover:text-white w-full"
                   }`}
                 >
                   {child.label}
@@ -266,12 +230,12 @@ const SideBar = () => {
             </SubMenu>
           ) : (
             <Menu.Item
-              key={item.key}
+              key={item.key || "/"}
               icon={item.icon}
               className={`${
                 isActive(item.key)
-                  ? "bg-orange-700 text-white rounded-full"
-                  : "hover:bg-orange-600 hover:text-white text-gray-300"
+                  ? "bg-white  text-gray-600 rounded-full w-full"
+                  : "hover:bg-purple-900 hover:text-white text-gray-600 w-full"
               }`}
             >
               {item.label}
@@ -280,10 +244,10 @@ const SideBar = () => {
         )}
       </Menu>
     )}
-    <Divider style={{ backgroundColor: "#fff" }} />
+    <Divider style={{ backgroundColor: "#4B5563" }} />
     {!collapsed && (
       <Menu
-        className="font-bold  bg-black text-white"
+        className="font-bold bg-white  text-gray-600"
         mode="inline"
         selectedKeys={[location.pathname]}
          theme="white"
@@ -294,8 +258,8 @@ const SideBar = () => {
             icon={item.icon}
             className={`${
               isActive(item.key)
-                ? "bg-orange-700 text-white rounded-full"
-                : "hover:bg-orange-600 hover:text-white text-gray-300"
+                ? "bg-white text-gray-600 rounded-full"
+                : "hover:bg-purple-900 hover:text-white text-gray-600"
             }`}
             onClick={() => navigate(item.key)}
           >
