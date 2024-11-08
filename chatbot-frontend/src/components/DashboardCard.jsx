@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUserPlus, faCalendarAlt, faArrowUp } from "@fortawesome/free-solid-svg-icons";
-import { Pie, Bar, Line } from "react-chartjs-2";
-import { faFacebook, faInstagram, faYoutube } from "@fortawesome/free-brands-svg-icons";
-import { faDesktop, faMobileAlt } from "@fortawesome/free-solid-svg-icons"; 
+import {
+  faUserPlus,
+  faCalendarAlt,
+  faArrowUp,
+} from "@fortawesome/free-solid-svg-icons";
+import { Pie, Line } from "react-chartjs-2";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -29,213 +32,27 @@ ChartJS.register(
   LineElement,
   Title
 );
+import DashboardPourcentage from "./DashboardPourcentage";
+import DashboardCharts from "./DashboardCharts";
+import AdsCard from "./AdsCard";
+import DeviceCard from "./DeviceCard";
+import Statistics from "./Statistics";
 
-const DashboardCard = ({ title, stat, icon, bgColor }) => (
-  <div
-    className={`p-6 bg-white rounded-lg shadow-md text-center border-t-4 ${bgColor}`}
-  >
-    <div className="flex items-center justify-center mb-4">
-      <FontAwesomeIcon icon={icon} className="text-4xl text-gray-700" />
-    </div>
-    <h4 className="text-lg font-semibold mb-2 text-gray-700">{title}</h4>
-    <p className="text-3xl font-bold text-gray-900">{stat}</p>
-  </div>
-);
-
-const DashboardPourcentage = ({ courseDetails }) => {
-  const barChartData = {
-    labels: ["Master", "Licence", "Certificat"],
-    datasets: [
-      {
-        // label: "Pourcentage",
-        data: courseDetails,
-        backgroundColor: "#6366F1",
-      },
-    ],
-  };
-
-  return (
-    <div className="">
-      <div className="flex">
-        <div style={{ height: "250px", width: "100%" }}>
-          {" "}
-          <Bar
-            data={barChartData}
-            options={{
-              responsive: true,
-              indexAxis: "y",
-              maintainAspectRatio: false,
-              scales: {
-                x: {
-                  beginAtZero: true,
-                  max: 100,
-                },
-              },
-              plugins: {
-                legend: {
-                  display: false,
-                },
-              },
-              elements: {
-                bar: {
-                  barThickness: 10,
-                  maxBarThickness: 10,
-                },
-              },
-            }}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const DashboardCharts = ({ totalLeads, categoryCounts }) => {
-  const pieChartDataLeft = {
-    labels: [
-      "Étudiant",
-      "Sans emploi",
-      "Salarié en activité",
-      "Parent",
-      "Entreprise",
-    ],
-    datasets: [
-      {
-        data: categoryCounts,
-        backgroundColor: [
-          "#3B82F6",
-          "#FBBF24",
-          "#F87171",
-          "#34D399",
-          "#A78BFA",
-        ],
-        hoverOffset: 4,
-      },
-    ],
-  };
-
-  return (
-    <div className="mt-8">
-      <div className="flex items-center justify-between">
-        <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] w-full">
-          <h4 className="text-lg text-center mt-2 font-semibold text-gray-700 mb-2">
-            Répartition des leads
-          </h4>
-          <Pie data={pieChartDataLeft} options={{ cutout: "90%" }} />
-          <p className="text-center mt-4 text-2xl font-semibold">
-            Total {totalLeads}
-          </p>{" "}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const AdsCard = () => {
-  
-  const pieData = [
-    {
-      platform: "Facebook",
-      icon: faFacebook,
-      chartData: {
-        labels: ["Engagement", "Reach", "Clicks"],
-        datasets: [
-          {
-            data: [30, 40, 30],
-            backgroundColor: ["#3b5998", "#8b9dc3", "#dfe3ee"],
-            hoverOffset: 4,
-          },
-        ],
-      },
-    },
-    {
-      platform: "Instagram",
-      icon: faInstagram,
-      chartData: {
-        labels: ["Engagement", "Reach", "Clicks"],
-        datasets: [
-          {
-            data: [25, 50, 25],
-            backgroundColor: ["#e1306c", "#f56040", "#fd1d1d"],
-            hoverOffset: 4,
-          },
-        ],
-      },
-    },
-    {
-      platform: "YouTube",
-      icon: faYoutube,
-      chartData: {
-        labels: ["Views", "Likes", "Subscribers"],
-        datasets: [
-          {
-            data: [40, 30, 30],
-            backgroundColor: ["#ff0000", "#ff6347", "#ffa07a"],
-            hoverOffset: 4,
-          },
-        ],
-      },
-    },
-  ];
-  
-  return (
-  
-    <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] p-6 mt-8">
-    <h4 className="text-lg font-semibold text-gray-700 mb-6 text-start">ADS</h4>
-    <div className="space-y-6">
-      {pieData.map(({ platform, icon, chartData }) => (
-        <div key={platform} className="flex items-center gap-12 justify-between">
-          <div className="flex items-center">
-            <FontAwesomeIcon icon={icon} className="text-3xl text-gray-600 mr-4" />
-            <h5 className="text-md font-semibold text-gray-600">{platform}</h5>
-          </div>
-          <div style={{ width: "50px", height: "50px" }}>
-            <Pie data={chartData} options={{ cutout: "70%", plugins: { legend: { display: false } } }} />
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-  
-  );
-};
-
-const DeviceCard = ({ mobileVisits, desktopVisits }) => {
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-2 w-full gap-6 mt-4">
-      {/* Desktop Card */}
-      <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] p-8">
-        
-        <div className="flex flex-col items-center justify-center">
-          <FontAwesomeIcon icon={faDesktop} className="text-4xl text-blue-600 mb-4" />
-          <p className="text-md font-semibold text-gray-600 mt-6">{desktopVisits}%</p>
-        </div>
-        <h4 className="text-sm font-semibold text-gray-700 mb-2 text-center">Desktop Traffic</h4>
-      </div>
-
-      {/* Mobile Card */}
-      <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] p-8">
-        <div className="flex flex-col items-center justify-center">
-          <FontAwesomeIcon icon={faMobileAlt} className="text-4xl text-pink-600 mb-4" />
-          <p className="text-md font-semibold text-gray-600 mt-6">{mobileVisits}%</p>
-        </div>
-        <h4 className="text-sm font-semibold text-gray-700 mb-2 text-center">Mobiles Traffic</h4>
-      </div>
-    </div>
-   
-  );
-};
-
-const TauxCapture = ({ qualifiePercent, desqualifiePercent, qualifieCount, desqualifieCount }) => {
+const TauxCapture = ({
+  qualifiePercent,
+  desqualifiePercent,
+  qualifieCount,
+  desqualifieCount,
+}) => {
   const totalPercent = qualifiePercent + desqualifiePercent;
 
   const data = {
-    labels: ['Total'],
+    labels: ["Total"],
     datasets: [
       {
         data: [totalPercent],
-        backgroundColor: ['#4CAF50'],
-        hoverBackgroundColor: ['#66BB6A'],
+        backgroundColor: ["#4CAF50"],
+        hoverBackgroundColor: ["#66BB6A"],
       },
     ],
   };
@@ -244,9 +61,9 @@ const TauxCapture = ({ qualifiePercent, desqualifiePercent, qualifieCount, desqu
     plugins: {
       datalabels: {
         display: true,
-        color: '#ffffff',
+        color: "#ffffff",
         font: {
-          weight: 'bold',
+          weight: "bold",
           size: 30,
         },
         formatter: () => `${totalPercentage}%`,
@@ -256,34 +73,41 @@ const TauxCapture = ({ qualifiePercent, desqualifiePercent, qualifieCount, desqu
       },
       legend: {
         display: false,
-      }
+      },
     },
-    cutout: '80%', // Makes the pie chart into a donut shape
+    cutout: "80%", // Makes the pie chart into a donut shape
   };
 
- 
   return (
     <div className="bg-white rounded-lg p-6 shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] flex flex-col items-center">
-      <h1 className="text-lg font-semibold text-gray-700 mb-6">Taux de captation</h1>
+      <h1 className="text-lg font-semibold text-gray-700 mb-6">
+        Taux de captation
+      </h1>
       <div className="relative w-40 h-40 mb-8">
         <Pie data={data} options={options} />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-gray-700">{totalPercent}%</span>
+          <span className="text-2xl font-bold text-gray-700">
+            {totalPercent}%
+          </span>
         </div>
       </div>
       <div className="flex justify-between w-full mt-8">
-        <div className=""> 
+        <div className="">
           <h1 className="text-sm font-semibold text-gray-300">
-         Contact disqualifié
-          </h1> 
-          <p className="text-center text-md font-semibold text-gray-600">{desqualifieCount}</p> 
-          </div>
+            Contact disqualifié
+          </h1>
+          <p className="text-center text-md font-semibold text-gray-600">
+            {desqualifieCount}
+          </p>
+        </div>
         <p className="text-md text-center font-semibold text-gray-300">
-        <h1 className="text-sm font-semibold text-gray-300">
-        Contact qualifié
-          </h1> 
-          <p className="text-center text-md font-semibold text-gray-600">{qualifieCount}</p> 
-           </p>
+          <h1 className="text-sm font-semibold text-gray-300">
+            Contact qualifié
+          </h1>
+          <p className="text-center text-md font-semibold text-gray-600">
+            {qualifieCount}
+          </p>
+        </p>
       </div>
     </div>
   );
@@ -299,8 +123,6 @@ const DashboardCards = () => {
   const [mobileVisits, setMobileVisits] = useState(0);
   const [desktopVisits, setDesktopVisits] = useState(0);
   const [averageDailyLeads, setAverageDailyLeads] = useState(0);
-
-  
 
   const handleCategorySelect = (category) => {
     const filteredLeads = leads.filter(
@@ -331,30 +153,45 @@ const DashboardCards = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/data');
+        const response = await axios.get("/data");
         const leadsData = response.data.chatData;
         setLeads(leadsData);
         setTotalLeads(leadsData.length);
 
         // Calculate average daily leads
         const uniqueDates = [
-          ...new Set(leadsData.map((lead) => new Date(lead.createdAt).toLocaleDateString())),
+          ...new Set(
+            leadsData.map((lead) =>
+              new Date(lead.createdAt).toLocaleDateString()
+            )
+          ),
         ];
         const average = leadsData.length / uniqueDates.length;
         setAverageDailyLeads(average);
 
-        const mobileVisitCount = leadsData.filter(lead => lead.device === "mobile").length;
-        const desktopVisitCount = leadsData.filter(lead => lead.device === "desktop").length;
+        const mobileVisitCount = leadsData.filter(
+          (lead) => lead.device === "mobile"
+        ).length;
+        const desktopVisitCount = leadsData.filter(
+          (lead) => lead.device === "desktop"
+        ).length;
 
-        const categories = ["Étudiant", "Demandeur d'emploi", "Salarié en activité", "Un parent", "Une entreprise"];
-        const counts = categories.map(category =>
-          leadsData.filter(
-            (lead) =>
-              (lead.not_talk && lead.not_talk.includes(category)) ||
-              (lead.remmberme && lead.remmberme.includes(category)) ||
-              (lead.job_seeker && lead.job_seeker.includes(category)) ||
-              (lead.company && lead.company.includes(category))
-          ).length
+        const categories = [
+          "Étudiant",
+          "Demandeur d'emploi",
+          "Salarié en activité",
+          "Un parent",
+          "Une entreprise",
+        ];
+        const counts = categories.map(
+          (category) =>
+            leadsData.filter(
+              (lead) =>
+                (lead.not_talk && lead.not_talk.includes(category)) ||
+                (lead.remmberme && lead.remmberme.includes(category)) ||
+                (lead.job_seeker && lead.job_seeker.includes(category)) ||
+                (lead.company && lead.company.includes(category))
+            ).length
         );
 
         setCategoryCounts(counts);
@@ -403,85 +240,102 @@ const DashboardCards = () => {
   return (
     <div>
       <div className="grid grid-cols-3 md:grid-cols-3 w-full gap-6 rounded-md mt-2">
-  <div className="md:col-span-1">
-    <DeviceCard mobileVisits={mobileVisits} desktopVisits={desktopVisits} />
-    <div className="mt-4">
-      <TauxCapture 
-        qualifiePercent={56}
-        desqualifiePercent={44}
-        qualifieCount={560}
-        desqualifieCount={440}
-      />
-    </div>
-  </div>
-
-  <div className="md:col-span-2">
-    <div className="bg-white  rounded-lg  shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] mt-4 w-full">
-      <h2 className="text-lg font-semibold px-6 py-4 text-gray-700 ">Contacts</h2>
-      <div className="flex items-center  w-full">
-        {/* Titles Section */}
-        <div className="flex flex-col space-y-12 justify-between w-1/6">
-      {/* Prévisions annuelles */}
-      <div className="text-center">
-        <div className="mt-4">
-
-          <FontAwesomeIcon icon={faCalendarAlt} className="text-gray-600 text-xl mx-auto" />
+        <div className="md:col-span-1">
+          <DeviceCard
+            mobileVisits={mobileVisits}
+            desktopVisits={desktopVisits}
+          />
+          <div className="mt-4">
+            <TauxCapture
+              qualifiePercent={56}
+              desqualifiePercent={44}
+              qualifieCount={560}
+              desqualifieCount={440}
+            />
+          </div>
         </div>
-        <h3 className="text-xs text-gray-400 font-semibold">Prévisions annuelles</h3>
-        <p className="text-xl font-bold">{totalLeads}</p> 
-      </div>
 
-      {/* Moyenne quotidienne */}
-      <div className="text-center">
-        <div className="mb-2">
+        <div className="md:col-span-2">
+          <div className="bg-white  rounded-lg  shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] mt-4 w-full">
+            <h2 className="text-lg font-semibold px-6 py-4 text-gray-700 ">
+              Contacts
+            </h2>
+            <div className="flex items-center  w-full">
+              {/* Titles Section */}
+              <div className="flex flex-col space-y-12 justify-between w-1/6">
+                {/* Prévisions annuelles */}
+                <div className="text-center">
+                  <div className="mt-4">
+                    <FontAwesomeIcon
+                      icon={faCalendarAlt}
+                      className="text-blue-200 text-xl mx-auto"
+                    />
+                  </div>
+                  <h3 className="text-xs text-gray-400 font-semibold">
+                    Prévisions annuelles
+                  </h3>
+                  <p className="text-xl font-bold">{totalLeads}</p>
+                </div>
 
-          <FontAwesomeIcon icon={faArrowUp} className="text-green-600 text-xl mx-auto" />
+                {/* Moyenne quotidienne */}
+                <div className="text-center">
+                  <div className="mb-2">
+                    <FontAwesomeIcon
+                      icon={faArrowUp}
+                      className="text-green-700 text-xl mx-auto"
+                    />
+                  </div>
+                  <h3 className="text-xs text-gray-400 font-semibold">
+                    Moyenne quotidienne
+                  </h3>
+                  <p className="text-xl font-bold">
+                    {getOneDecimalPlace(averageDailyLeads)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="w-5/6 h-[300px]">
+                <Line
+                  data={chartData}
+                  options={{
+                    responsive: true,
+                    scales: {
+                      x: {
+                        title: {
+                          display: false,
+                        },
+                        ticks: {
+                          display: false,
+                          beginAtZero: true,
+                          stepSize: 1,
+                        },
+                      },
+                      y: {
+                        title: {
+                          display: false,
+                        },
+                        min: 0,
+                        max: 50,
+                        ticks: {
+                          stepSize: 10,
+                        },
+                      },
+                    },
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <Statistics
+              mobileVisits={mobileVisits}
+              avgPagesVisited={5}
+              medianSessionTime={10}
+              creditScore={700}
+            />
+          </div>
         </div>
-        <h3 className="text-xs text-gray-400 font-semibold">Moyenne quotidienne</h3>
-        <p className="text-xl font-bold">{getOneDecimalPlace(averageDailyLeads)}</p> 
       </div>
-      </div>
-
-      <div className="w-5/6 h-[300px]">
-        <Line 
-          data={chartData} 
-          options={{
-            responsive: true,
-            scales: {
-              x: {
-                title: {
-                  display: false,
-                },
-                ticks: {
-                  display: false, 
-                  beginAtZero: true,
-                  stepSize: 1,
-                },
-              },
-              y: {
-                title: {
-                  display: false,
-                },
-                min: 0, 
-                max: 50,
-                ticks: {
-                  stepSize: 10,
-                },
-              },
-            },
-          }}
-        />
-      </div>
-      </div>
-    </div>
-    <div className="flex gap-4">
-    <DeviceCard mobileVisits={mobileVisits} desktopVisits={desktopVisits} />
-    <DeviceCard mobileVisits={mobileVisits} desktopVisits={desktopVisits} />
-    </div>
-
-  </div>
-      </div>
-
 
       <div className="flex gap-4 items-center">
         <DashboardCharts
@@ -518,12 +372,10 @@ const DashboardCards = () => {
 
           <DashboardPourcentage courseDetails={courseDetails} />
         </div>
-        
       </div>
-       <div className="w-full flex flex-row  gap-8">
-            <AdsCard />
-          
-          </div>
+      <div className="w-full flex flex-row  gap-8">
+        <AdsCard />
+      </div>
     </div>
   );
 };
