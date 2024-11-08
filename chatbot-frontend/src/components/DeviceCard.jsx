@@ -34,7 +34,7 @@ const DeviceCard = ({ mobileVisits, desktopVisits }) => {
           <div className="flex flex-col items-center justify-center">
             <FontAwesomeIcon
               icon={faDesktop}
-              className="text-4xl text-blue-400 mb-4"
+              className="text-4xl text-blue-200 mb-4"
             />
             <p className="text-md font-semibold text-gray-600 mt-6">
               {desktopVisits}%
@@ -50,7 +50,7 @@ const DeviceCard = ({ mobileVisits, desktopVisits }) => {
           <div className="flex flex-col items-center justify-center">
             <FontAwesomeIcon
               icon={faMobileAlt}
-              className="text-4xl text-purple-600 mb-4"
+              className="text-4xl text-purple-200 mb-4"
             />
             <p className="text-md font-semibold text-gray-600 mt-6">
               {mobileVisits}%

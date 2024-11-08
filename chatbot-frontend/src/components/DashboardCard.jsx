@@ -123,8 +123,10 @@ const DashboardCards = () => {
   const [mobileVisits, setMobileVisits] = useState(0);
   const [desktopVisits, setDesktopVisits] = useState(0);
   const [averageDailyLeads, setAverageDailyLeads] = useState(0);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const handleCategorySelect = (category) => {
+    setSelectedCategory(category);
     const filteredLeads = leads.filter(
       (lead) =>
         (lead.not_talk && lead.not_talk.includes(category)) ||
@@ -204,6 +206,14 @@ const DashboardCards = () => {
     fetchData();
   }, []);
 
+  const categories = [
+    { label: "Étudiant", color: "bg-blue-500" },
+    { label: "Sans emploi", color: "bg-yellow-500" },
+    { label: "Salarié en activité", color: "bg-pink-500" },
+    { label: "Un parent", color: "bg-green-500" },
+    { label: "Entreprise", color: "bg-purple-500" },
+  ]
+
   const prepareChartData = () => {
     const groupedLeads = leads.reduce((acc, lead) => {
       const date = new Date(lead.createdAt).toLocaleDateString();
@@ -282,7 +292,7 @@ const DashboardCards = () => {
                   <div className="mb-2">
                     <FontAwesomeIcon
                       icon={faArrowUp}
-                      className="text-green-700 text-xl mx-auto"
+                      className="text-green-400 text-xl mx-auto"
                     />
                   </div>
                   <h3 className="text-xs text-gray-400 font-semibold">
@@ -344,7 +354,7 @@ const DashboardCards = () => {
         />
 
         <div className="w-full flex flex-col pb-14 mt-8 space-y-2 bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)]">
-          <div className="flex space-x-2 p-4  mb-2">
+          {/* <div className="flex space-x-2 p-4  mb-2">
             {[
               "Étudiant",
               "Sans emploi",
@@ -368,7 +378,22 @@ const DashboardCards = () => {
                 {category}
               </button>
             ))}
-          </div>
+          </div> */}
+           <div className="flex space-x-2 p-4 mb-2">
+        {categories.map((category, index) => (
+          <button
+            key={index}
+            className={`py-2 text-sm rounded w-full ${
+              selectedCategory === category.label
+                ? "bg-pink-600 text-white"
+                : "bg-gray-100 text-black"
+            }`}
+            onClick={() => handleCategorySelect(category.label)}
+          >
+            {category.label}
+          </button>
+        ))}
+      </div>
 
           <DashboardPourcentage courseDetails={courseDetails} />
         </div>
