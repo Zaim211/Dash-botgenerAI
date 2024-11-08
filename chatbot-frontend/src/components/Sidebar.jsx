@@ -54,87 +54,87 @@ const SideBar = () => {
   const items = [
     {
       key: "/",
-      icon: <FontAwesomeIcon icon={faHome} style={{ fontSize: "25px" }}/>,
+      icon: <FontAwesomeIcon icon={faHome} style={{ fontSize: "23px", marginRight: "10px" }}/>,
       label: "Dashboard",
     },
     {
       key: "/leads",
-      icon: <FontAwesomeIcon icon={faUserTie} style={{ fontSize: "25px" }}/>,
-      label: "Total des Leads",
+      icon: <FontAwesomeIcon icon={faUserTie} style={{ fontSize: "23px", marginRight: "10px" }}/>,
+      label: "Contacts",
     },
     {
-      key: "/websites",
-      icon: <FontAwesomeIcon icon={faGlobe} style={{ fontSize: "25px" }}/>,
-      label: "Websites",
+      key: "/programmes",
+      icon: <FontAwesomeIcon icon={faGlobe} style={{ fontSize: "23px", marginRight: "10px" }}/>,
+      label: "Programmes",
   
-      children: [
-        {
-          key: "/add-website",
-          label: "Add New Website",
-          icon: <FontAwesomeIcon icon={faPlusCircle} style={{ fontSize: "25px" }}/>,
-        },
-        {
-          key: "/list-websites",
-          label: "Website List",
-          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
-        },
-        {
-          key: "/website-data",
-          label: "Website Data",
-          icon: <FontAwesomeIcon icon={faChartBar} style={{ fontSize: "25px" }}/>,
-        },
-        {
-          key: "/website-analytics",
-          label: "Analytics",
-          icon: <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "25px" }}/>,
-        },
-        {
-          key: "/assign-chatbot",
-          label: "Assign Chatbot to Website",
-          icon: <FontAwesomeIcon icon={faUserTag} style={{ fontSize: "25px" }}/>,
-        },
-      ],
-    },
-  
-    {
-      key: "/chatbots",
-      icon: <FontAwesomeIcon icon={faComments} style={{ fontSize: "25px" }}/>,
-      label: "Chatbots",
-  
-      children: [
-        {
-          key: "/list-chatbots",
-          label: "Chatbot List",
-          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
-        },
-        {
-          key: "/manage-chatbot",
-          label: "Manage Chatbot",
-          icon: <FontAwesomeIcon icon={faCogs} style={{ fontSize: "25px" }}/>,
-        },
-        {
-          key: "/performance",
-          label: "Chatbot Performance",
-          icon: <FontAwesomeIcon icon={faTachometerAlt} style={{ fontSize: "25px" }}/>,
-        },
-      ],
+      // children: [
+      //   {
+      //     key: "/add-website",
+      //     label: "Add New Website",
+      //     icon: <FontAwesomeIcon icon={faPlusCircle} style={{ fontSize: "25px" }}/>,
+      //   },
+      //   {
+      //     key: "/list-websites",
+      //     label: "Website List",
+      //     icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
+      //   },
+      //   {
+      //     key: "/website-data",
+      //     label: "Website Data",
+      //     icon: <FontAwesomeIcon icon={faChartBar} style={{ fontSize: "25px" }}/>,
+      //   },
+      //   {
+      //     key: "/website-analytics",
+      //     label: "Analytics",
+      //     icon: <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "25px" }}/>,
+      //   },
+      //   {
+      //     key: "/assign-chatbot",
+      //     label: "Assign Chatbot to Website",
+      //     icon: <FontAwesomeIcon icon={faUserTag} style={{ fontSize: "25px" }}/>,
+      //   },
+      // ],
     },
   
     {
-      key: "/integrations",
-      icon: <FontAwesomeIcon icon={faProjectDiagram} style={{ fontSize: "25px" }}/>,
-      label: "Integrations",
+      key: "/entreprises",
+      icon: <FontAwesomeIcon icon={faComments} style={{ fontSize: "23px", marginRight: "10px" }}/>,
+      label: "Entreprises",
+  
+      // children: [
+      //   {
+      //     key: "/list-chatbots",
+      //     label: "Chatbot List",
+      //     icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
+      //   },
+      //   {
+      //     key: "/manage-chatbot",
+      //     label: "Manage Chatbot",
+      //     icon: <FontAwesomeIcon icon={faCogs} style={{ fontSize: "25px" }}/>,
+      //   },
+      //   {
+      //     key: "/performance",
+      //     label: "Chatbot Performance",
+      //     icon: <FontAwesomeIcon icon={faTachometerAlt} style={{ fontSize: "25px" }}/>,
+      //   },
+      // ],
+    },
+  
+    {
+      key: "/campagnes",
+      icon: <FontAwesomeIcon icon={faProjectDiagram} style={{ fontSize: "23px", marginRight: "10px" }}/>,
+      label: "Campagnes",
   
       children: [
         {
-          key: "/add-integration",
-          label: "Add New Integration",
-          icon: <FontAwesomeIcon icon={faPlusCircle} style={{ fontSize: "25px" }}/>,
+          key: "/bannières",
+          label: "Bannières",
+          icon: <FontAwesomeIcon icon={faPlusCircle} style={{ fontSize: "23px", marginRight: "10px" }}/>,
         },
         {
-          key: "/list-integrations",
-          label: "Integration List",
-          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
+          key: "/magic-sms",
+          label: "Magic SMS",
+          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "23px", marginRight: "10px" }}/>,
         },
       ],
     },
@@ -142,14 +142,14 @@ const SideBar = () => {
    
     {
       key: "/admins",
-      icon: <FontAwesomeIcon icon={faUserShield} style={{ fontSize: "25px" }}/>,
+      icon: <FontAwesomeIcon icon={faUserShield} style={{ fontSize: "23px", marginRight: "10px" }}/>,
       label: "Admins",
   
       children: [
         {
           key: "/list-admins",
           label: "Admin List",
-          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
+          icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "23px", marginRight: "10px" }}/>,
         },
       ],
     },
@@ -159,12 +159,12 @@ const SideBar = () => {
   const itemsCenter = [
     {
       key: "/settings",
-      icon: <SettingOutlined style={{ fontSize: "25px" }}/>,
+      icon: <SettingOutlined style={{ fontSize: "23px", marginRight: "10px" }}/>,
       label: "Settings",
     },
     {
       key: "/help",
-      icon: <FontAwesomeIcon icon={faQuestionCircle} style={{ fontSize: "25px" }}/>,
+      icon: <FontAwesomeIcon icon={faQuestionCircle} style={{ fontSize: "23px", marginRight: "10px" }}/>,
       label: "Help",
     },
   ];
@@ -200,7 +200,7 @@ const SideBar = () => {
   >
     {!collapsed && (
       <Menu
-        className=" font-bold gap-6 text-gray-600 mt-2 text-md w-full"
+        className=" font-bold gap-12 text-gray-600 mt-2 text-md w-full"
         theme="white"
         mode="inline"
         selectedKeys={[location.pathname]}
