@@ -1,40 +1,73 @@
-import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
-import DashboardCards from "../components/DashboardCard";
-import { jwtDecode } from "jwt-decode";
+// import DashboardCards from "../components/DashboardCard";
 
+// const Home = () => {
+//   return (
+//     <div className="p-4 rounded-md bg-white ">
+//       <h2 className="text-2xl  font-bold">Dashboard</h2>
+//       <DashboardCards />
+//     </div>
+//   );
+// };
+
+// export default Home;
+import React, { useState, useEffect } from "react";
+import DashboardCards from "../components/DashboardCard";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons"; // Import the calendar icon
 
 const Home = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const token = localStorage.getItem("token");
-  const decodedToken = token ? jwtDecode(token) : "";
-  const user = decodedToken ? decodedToken.user : {};
+  const [currentMonthRange, setCurrentMonthRange] = useState("");
 
-  const handleSignOut = () => {
-    // Logic for signing out (e.g., clearing tokens, redirecting to login page)
-    setIsAuthenticated(false);
+  const getMonthRange = () => {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear(); 
+
+    // Current date is today
+    const startDate = currentDate;
+    
+    // Same day next month
+    const nextMonthEnd = new Date(currentYear, currentDate.getMonth() + 1, currentDate.getDate());
+
+    const startStr = startDate.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+    const endStr = nextMonthEnd.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+
+    return `${startStr} - ${endStr}`;
   };
+
+  useEffect(() => {
+    const updateMonthRange = () => {
+      setCurrentMonthRange(getMonthRange());
+    };
+
+    updateMonthRange();
+
+    const intervalId = setInterval(updateMonthRange, 60000); // Update every minute
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
-    <div className="flex-1 px-4">
-       <div className="mb-12">
-       <Navbar
-          isAuthenticated={isAuthenticated}
-          user={user}
-          onSignOut={handleSignOut}
-        />
-       </div>
-      {/* Main content */}
-      <div className="flex-1  border rounded-sm">
-        {/* Pass props to Navbar */}
-       
-        <div className="p-4 rounded-md bg-white ">
-          <h2 className="text-2xl font-bold">Overview</h2>
-          <DashboardCards />
-        </div> 
+    <div className="p-4 rounded-md bg-white">
+      <div className="flex items-center justify-between space-x-4">
+        <h2 className="text-2xl font-bold">Dashboard</h2>
+        <span className="flex items-center space-x-2 text-sm bg-gray-100 p-2 rounded-md text-gray-500">
+          {/* Calendar Icon */}
+          <FontAwesomeIcon icon={faCalendarAlt} />
+          <span>{currentMonthRange}</span> {/* Display the month range */}
+        </span>
       </div>
+      <DashboardCards />
     </div>
   );
 };
 
 export default Home;
+

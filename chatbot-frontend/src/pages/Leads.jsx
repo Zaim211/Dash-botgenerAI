@@ -12,6 +12,7 @@ const Leads = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [showSpinner, setShowSpinner] = useState(false)
 
   const handlePageChange = (value) => {
     setCurrentPage(value);
@@ -122,19 +123,43 @@ const Leads = () => {
    
   ];
 
-  if (loading) return <Spin tip="Loading..." />;
+  // if (loading) return <Spin tip="Loading..." />;
+    // Simulate loading delay
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setShowSpinner(true);
+      }, 1000); // Show spinner after 1 second
+  
+      // Cleanup timer if component unmounts
+      return () => clearTimeout(timer);
+    }, []);
+  
+    // Mock loading completion (replace with actual loading logic)
+    useEffect(() => {
+      const fakeLoad = setTimeout(() => {
+        setLoading(false);
+      }, 3000); // Replace with actual loading duration
+  
+      return () => clearTimeout(fakeLoad);
+    }, []);
+  
+    if (loading && showSpinner) return <Spin tip="Loading..." />;
+  
+
+
+
   if (error) return <Alert message="Error" description={error} type="error" showIcon />;
 
   return (
-    <div className=" bg-gray-50 h-full mb-6">
-      <Title
+    <div className=" bg-gray-50 h-full mb-6 rounded-md">
+      {/* <Title
         level={1}
         className="text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 shadow-md mb-6"
       >
         🎉 Leads Dashboard 🎉
-      </Title>
+      </Title> */}
 
-      <div className="mb-4 p-4 flex items-center gap-4">
+      <div className="mb-4 p-4 flex items-center rounded-md gap-4">
         <span className="font-thin text-gray-600">Afficher</span>
         <Select defaultValue={1} onChange={handlePageChange} className="w-20 border-gray-300">
           {[...Array(totalPages)].map((_, index) => (

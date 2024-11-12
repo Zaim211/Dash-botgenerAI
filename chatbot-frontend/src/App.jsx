@@ -7,6 +7,9 @@ import { UserContextProvider } from "./UserContext";
 import { ToggleProvider } from "./components/store/ToggleContext";
 import Leads from "./pages/Leads";
 import Layout from "./Layout";
+import Programmes from "./pages/Programmes";
+import Entreprise from "./pages/Entreprise";
+import Bannières from "./pages/Bannières";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -21,6 +24,9 @@ function App() {
             <Route index element={<Home />} />
             {/* Route for Leads at `/leads` */}
             <Route path="leads" element={<Leads />} />
+            <Route path='/programmes' element={<Programmes />} />
+            <Route path='/entreprise' element={<Entreprise />} />
+            <Route path="/bannières" element={<Bannières />} />
           </Route>
           {/* Separate routes for authentication */}
           <Route path="/SignIn" element={<SignIn />} />

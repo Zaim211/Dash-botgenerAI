@@ -159,7 +159,6 @@ import {
   UserOutlined,
   LogoutOutlined,
   SettingOutlined,
-  SearchOutlined,
 } from "@ant-design/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faClose, faHome } from "@fortawesome/free-solid-svg-icons";
@@ -216,26 +215,7 @@ const Navbar = () => {
       className="flex items-center justify-between bg-white rounded-md shadow-xl px-6 py-4"
       style={{ maxHeight: "100%" }}
     >
-      <div className="flex items-center">
-        {/* Home Icon */}
-        <FontAwesomeIcon icon={faHome} className="text-gray-800 text-2xl mr-2" />
-        <h1 className="font-semibold text-gray-800 text-xl">Dashboard</h1>
-      </div>
-
-      <div className="flex items-center space-x-6">
-        <div className="flex items-center">
-          <AntdInput
-            placeholder="Search..."
-            prefix={<SearchOutlined />}
-            style={{
-              borderRadius: "30px",
-              padding: "0.5rem 1rem",
-              maxWidth: "300px",
-              backgroundColor: "#F5F5F5",
-              border: "1px solid #ddd",
-            }}
-          />
-        </div>
+    <div>
 
         {/* Right Section */}
         <div className="flex items-center space-x-6">
