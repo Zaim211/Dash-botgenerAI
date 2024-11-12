@@ -11,7 +11,7 @@ const Leads = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(4);
+  const [pageSize, setPageSize] = useState(10);
 
   const handlePageChange = (value) => {
     setCurrentPage(value);
@@ -79,13 +79,13 @@ const Leads = () => {
       title: "NIVEAU D'ETUDE",
       dataIndex: "course_details",
       key: "course_details",
-      render: (text) => text || "-",
+      render: (text, record) => text || record.employee_training || "-",
     },
     {
       title: "CAMPUS",
       dataIndex: "student",
       key: "student",
-      render: (text) => text || "-",
+      render: (text, record) => text || record.salarie_details || record.découvrir || "-",
     },
     {
         title: "STATUS LEAD",
@@ -106,13 +106,13 @@ const Leads = () => {
       title: "SPECIALITY",
       dataIndex: "choose_course",
       key: "choose_course",
-      render: (text, record) => record.program_interest || record.choose_course || "-",
+      render: (text, record) => record.program_interest || record.employee_training || record.choose_course || record.choose_course_salarie || "-",
     },
     {
       title: "Duration",
       dataIndex: "duration",
       key: "duration",
-      render: (text) => text || "-",
+      render: (text, record) => text || record.training_details || "-",
     },
     {
       title: "STATUS",
@@ -126,7 +126,7 @@ const Leads = () => {
   if (error) return <Alert message="Error" description={error} type="error" showIcon />;
 
   return (
-    <div className=" bg-gray-50 h-screen">
+    <div className=" bg-gray-50 h-full mb-6">
       <Title
         level={1}
         className="text-center font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 shadow-md mb-6"

@@ -17,6 +17,7 @@ import {
   faQuestionCircle,
   faSpaghettiMonsterFlying,
   faGlobe,
+  faFlag,
   faComments,
   faProjectDiagram,
   faFileInvoiceDollar,
@@ -26,6 +27,8 @@ import {
   faChartLine,
   faCogs,
   faTachometerAlt,
+  faThLarge,
+  faBullhorn
 
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -64,65 +67,23 @@ const SideBar = () => {
     },
     {
       key: "/programmes",
-      icon: <FontAwesomeIcon icon={faGlobe} style={{ fontSize: "23px", marginRight: "10px" }}/>,
+      icon: <FontAwesomeIcon icon={faThLarge} style={{ fontSize: "23px", marginRight: "10px" }}/>,
       label: "Programmes",
   
-      // children: [
-      //   {
-      //     key: "/add-website",
-      //     label: "Add New Website",
-      //     icon: <FontAwesomeIcon icon={faPlusCircle} style={{ fontSize: "25px" }}/>,
-      //   },
-      //   {
-      //     key: "/list-websites",
-      //     label: "Website List",
-      //     icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
-      //   },
-      //   {
-      //     key: "/website-data",
-      //     label: "Website Data",
-      //     icon: <FontAwesomeIcon icon={faChartBar} style={{ fontSize: "25px" }}/>,
-      //   },
-      //   {
-      //     key: "/website-analytics",
-      //     label: "Analytics",
-      //     icon: <FontAwesomeIcon icon={faChartLine} style={{ fontSize: "25px" }}/>,
-      //   },
-      //   {
-      //     key: "/assign-chatbot",
-      //     label: "Assign Chatbot to Website",
-      //     icon: <FontAwesomeIcon icon={faUserTag} style={{ fontSize: "25px" }}/>,
-      //   },
-      // ],
+   
     },
   
     {
       key: "/entreprises",
-      icon: <FontAwesomeIcon icon={faComments} style={{ fontSize: "23px", marginRight: "10px" }}/>,
+      icon: <FontAwesomeIcon icon={faFlag} style={{ fontSize: "23px", marginRight: "10px" }}/>,
       label: "Entreprises",
   
-      // children: [
-      //   {
-      //     key: "/list-chatbots",
-      //     label: "Chatbot List",
-      //     icon: <FontAwesomeIcon icon={faList} style={{ fontSize: "25px" }}/>,
-      //   },
-      //   {
-      //     key: "/manage-chatbot",
-      //     label: "Manage Chatbot",
-      //     icon: <FontAwesomeIcon icon={faCogs} style={{ fontSize: "25px" }}/>,
-      //   },
-      //   {
-      //     key: "/performance",
-      //     label: "Chatbot Performance",
-      //     icon: <FontAwesomeIcon icon={faTachometerAlt} style={{ fontSize: "25px" }}/>,
-      //   },
-      // ],
+      
     },
   
     {
       key: "/campagnes",
-      icon: <FontAwesomeIcon icon={faProjectDiagram} style={{ fontSize: "23px", marginRight: "10px" }}/>,
+      icon: <FontAwesomeIcon icon={faBullhorn} style={{ fontSize: "23px", marginRight: "10px" }}/>,
       label: "Campagnes",
   
       children: [

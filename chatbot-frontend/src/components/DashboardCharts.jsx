@@ -28,7 +28,7 @@ const DashboardCharts = ({ totalLeads, categoryCounts }) => {
     const pieChartDataLeft = {
       labels: [
         "Étudiant",
-        "Sans emploi",
+        "Demandeur d'emploi",
         "Salarié en activité",
         "Parent",
         "Entreprise",

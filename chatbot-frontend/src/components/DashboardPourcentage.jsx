@@ -54,6 +54,16 @@ const DashboardPourcentage = ({ courseDetails }) => {
                       max: 100,
                     },
                   },
+                  scales: {
+                    x: {
+                      beginAtZero: true,
+                      max: 100,
+                    },
+                    y: {
+                      categoryPercentage: 0.5, // Decrease this for more space between bars
+                      barPercentage: 0.8, // Smaller bar width relative to the available space
+                    },
+                  },
                   plugins: {
                     legend: {
                       display: false,
@@ -61,8 +71,8 @@ const DashboardPourcentage = ({ courseDetails }) => {
                   },
                   elements: {
                     bar: {
-                      barThickness: 10,
-                      maxBarThickness: 10,
+                      barThickness: 5,
+                      maxBarThickness: 5,
                     },
                   },
                 }}

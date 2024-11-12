@@ -130,10 +130,12 @@ const DashboardCards = () => {
     const filteredLeads = leads.filter(
       (lead) =>
         (lead.not_talk && lead.not_talk.includes(category)) ||
-        (lead.remmberme && lead.remmberme.includes(category))
+        (lead.remmberme && lead.remmberme.includes(category)) ||
+        (lead.job_seeker && lead.job_seeker.includes(category)) ||
+        (lead.company && lead.company.includes(category))
     );
 
-    const courseCounts = { Master: 0, Licence: 0, Certificat: 0 };
+    const courseCounts = { Master: 0, Licence: 0, Certificat: 0, Autre: 0 };
 
     filteredLeads.forEach((lead) => {
       const course = lead.course_details;
@@ -147,6 +149,7 @@ const DashboardCards = () => {
       (courseCounts.Master / totalCourses) * 100 || 0,
       (courseCounts.Licence / totalCourses) * 100 || 0,
       (courseCounts.Certificat / totalCourses) * 100 || 0,
+      (courseCounts.Autre / totalCourses) * 100 || 0,
     ];
 
     setCourseDetails(newCourseDetails);
@@ -192,7 +195,7 @@ const DashboardCards = () => {
                 (lead.not_talk && lead.not_talk.includes(category)) ||
                 (lead.remmberme && lead.remmberme.includes(category)) ||
                 (lead.job_seeker && lead.job_seeker.includes(category)) ||
-                (lead.company && lead.company.includes(category))
+                (lead.company && lead.company.includes(category)) 
             ).length
         );
 
@@ -208,7 +211,7 @@ const DashboardCards = () => {
 
   const categories = [
     { label: "Étudiant", color: "bg-blue-500" },
-    { label: "Sans emploi", color: "bg-yellow-500" },
+    { label: "Demandeur d'emploi", color: "bg-yellow-500" },
     { label: "Salarié en activité", color: "bg-pink-500" },
     { label: "Un parent", color: "bg-green-500" },
     { label: "Entreprise", color: "bg-purple-500" },
