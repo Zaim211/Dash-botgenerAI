@@ -22,9 +22,9 @@ const Bannières = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Bannières</h1>
+      
+      <form className="space-y-4 p-4 bg-white  rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)]">
       <p className="text-lg font-semibold mb-4">Création d'une bannière</p>
-      <form className="space-y-4">
-        {/* Banner Title */}
         <div>
         <div>
           <label htmlFor="bannerImage" className="block text-sm font-medium mb-2 text-gray-700">

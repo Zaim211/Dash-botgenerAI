@@ -1,15 +1,4 @@
-// import DashboardCards from "../components/DashboardCard";
 
-// const Home = () => {
-//   return (
-//     <div className="p-4 rounded-md bg-white ">
-//       <h2 className="text-2xl  font-bold">Dashboard</h2>
-//       <DashboardCards />
-//     </div>
-//   );
-// };
-
-// export default Home;
 import React, { useState, useEffect } from "react";
 import DashboardCards from "../components/DashboardCard";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

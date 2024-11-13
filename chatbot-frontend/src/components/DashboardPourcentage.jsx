@@ -48,12 +48,12 @@ const DashboardPourcentage = ({ courseDetails }) => {
                   responsive: true,
                   indexAxis: "y",
                   maintainAspectRatio: false,
-                  scales: {
-                    x: {
-                      beginAtZero: true,
-                      max: 100,
-                    },
-                  },
+                  // scales: {
+                  //   x: {
+                  //     beginAtZero: true,
+                  //     max: 100,
+                  //   },
+                  // },
                   scales: {
                     x: {
                       beginAtZero: true,
