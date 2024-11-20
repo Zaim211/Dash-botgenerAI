@@ -227,6 +227,7 @@ const Leads = () => {
           bordered
           className="custom-table"
           rowSelection={rowSelection}
+          tableLayout="fixed"
         />
       </div>
     </div>
