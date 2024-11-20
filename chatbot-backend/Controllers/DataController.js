@@ -28,6 +28,39 @@ class DataController {
       res.status(500).json({ message: "Error retrieving chat data", error });
     }
   }
+  static async getdataById(req, res) {
+    try {
+      const { id } = req.params;
+      const chat = await Chat.findById(id);
+
+      if (!chat) {
+        return res.status(404).json({ message: "Chat not found" });
+      }
+
+      res.status(200).json({ chat });
+    } catch (error) {
+      console.error("Error retrieving chat by ID:", error);
+      res.status(500).json({ message: "Error retrieving chat by ID", error });
+    }
+  }
+  static async updateDataById(req, res) {
+    try {
+      const { id } = req.params; // Get the ID from the URL params
+      const updatedData = req.body; // Get the updated data from the request body
+
+      // Find the chat by ID and update it
+      const chat = await Chat.findByIdAndUpdate(id, updatedData, { new: true });
+
+      if (!chat) {
+        return res.status(404).json({ message: "Chat not found" });
+      }
+
+      res.status(200).json({ chat });
+    } catch (error) {
+      console.error("Error updating chat:", error);
+      res.status(500).json({ message: "Error updating chat", error });
+    }
+  }
 }
 
 module.exports = DataController;
