@@ -10,6 +10,7 @@ import Layout from "./Layout";
 import Programmes from "./pages/Programmes";
 import Entreprise from "./pages/Entreprise";
 import Bannières from "./pages/Bannières";
+import LeadDetailsPage from "./pages/LeadDetailsPage";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -27,6 +28,7 @@ function App() {
             <Route path='/programmes' element={<Programmes />} />
             <Route path='/entreprise' element={<Entreprise />} />
             <Route path="/bannières" element={<Bannières />} />
+            <Route path="/lead/:id" element={<LeadDetailsPage />}/>
           </Route>
           {/* Separate routes for authentication */}
           <Route path="/SignIn" element={<SignIn />} />

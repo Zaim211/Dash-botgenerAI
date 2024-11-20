@@ -10,8 +10,8 @@ import {
   Button,
 } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { useNavigate, Link } from "react-router-dom";
 
-const { Title } = Typography;
 const { Option } = Select;
 
 const Leads = () => {
@@ -21,9 +21,14 @@ const Leads = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [showSpinner, setShowSpinner] = useState(false);
+  const [selectedLeads, setSelectedLeads] = useState([]);
+  const navigate = useNavigate();
 
   const handlePageChange = (value) => {
     setCurrentPage(value);
+  };
+  const handleCoachClick = (chatData) => {
+    navigate(`/lead/${chatData._id}`);
   };
 
   const totalPages = Math.ceil(chatData.length / pageSize);
@@ -55,11 +60,9 @@ const Leads = () => {
       title: "NOM",
       key: "request_name",
       render: (text, record) => (
-        <div>
+        <div className="cursor-pointer"
+        onClick={() => handleCoachClick(record)}>
           <div>{record.request_name || "-"}</div>
-          {/* <div className="text-gray-500 text-sm">
-            {record.request_email || "-"}
-          </div> */}
            <div className="text-gray-500 text-sm">
           {record.verification_email === "Non"
             ? record.request_add_email || "-" 
@@ -118,7 +121,7 @@ const Leads = () => {
         >
           <Option value="nouveau">Nouveau</Option>
           <Option value="prospect">Prospect</Option>
-          <Option value="validé">Validé</Option>
+          <Option value="validé">Client</Option>
         </Select>
       ),
     },
@@ -170,6 +173,12 @@ const Leads = () => {
 
   if (error)
     return <Alert message="Error" description={error} type="error" showIcon />;
+  const rowSelection = {
+    onChange: (selectedRowKeys) => {
+      setSelectedLeads(selectedRowKeys);
+    },
+    selectedRowKeys: selectedLeads,
+  };
 
   return (
     <div className=" bg-gray-50 h-full mb-6 rounded-md">
@@ -217,6 +226,7 @@ const Leads = () => {
           pagination={false}
           bordered
           className="custom-table"
+          rowSelection={rowSelection}
         />
       </div>
     </div>
