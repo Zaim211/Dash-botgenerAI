@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 // middleware to connect with frontend
 app.use(cors({
-    origin: ["http://localhost:5173", "http://localhost:5175"],
+    origin: ["http://localhost:5173", "http://localhost:5175", "https://chat-bot-dashboard-bice.vercel.app"],
     credentials: true,
 }));
 
