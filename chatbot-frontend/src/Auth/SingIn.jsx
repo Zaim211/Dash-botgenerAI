@@ -55,7 +55,7 @@ const SignIn = () => {
           <h1 className="text-2xl font-bold text-black text-center">Connectez-vous à votre compte</h1>
           <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-black">Votre email</label>
+              <label htmlFor="email" className="block mb-2 text-sm font-semibold text-black">Votre email</label>
               <div className="flex items-center border border-gray-300 rounded-md focus-within:ring focus-within:ring-gray-500">
                 <FontAwesomeIcon icon={faEnvelope} className="text-md mx-3 text-black" />
                 <input
@@ -70,7 +70,7 @@ const SignIn = () => {
               </div>
             </div>
             <div>
-              <label htmlFor="password" className="block mb-2 text-sm font-medium text-black">Mot de passe</label>
+              <label htmlFor="password" className="block mb-2 text-sm font-semibold text-black">Mot de passe</label>
               <div className="flex items-center border border-gray-300 rounded-md focus-within:ring focus-within:ring-gray-500">
                 <FontAwesomeIcon icon={faLock} className="text-md mx-3 text-black" />
                 <input
