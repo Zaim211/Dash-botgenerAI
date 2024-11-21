@@ -3,21 +3,21 @@ const mongoose = require('mongoose');
 const chatSchema = new mongoose.Schema({
     request_name: {
         type: String,
-        required: true,
+        // required: true,
     },
     request_email: {
         type: String,
-        required: true,
+        // required: true,
         match: /.+\@.+\..+/, // Basic email format validation
     },
     request_add_email: {
         type: String,
-        required: true,
+        // required: true,
         match: /.+\@.+\..+/,
     },
     request_phone: {
         type: String,
-        required: true,
+        // required: true,
     },
     new_start: { type: String, default: '' },
     type: { type: String, default: "all" },
