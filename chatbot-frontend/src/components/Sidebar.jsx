@@ -355,13 +355,13 @@ const SideBar = () => {
       selectedKeys={[location.pathname]}
       theme="white"
     >
-      <Menu.Item
+      {/* <Menu.Item
         key="/help"
         icon={<FontAwesomeIcon icon={faQuestionCircle} style={{ fontSize: "23px" }} />}
         onClick={() => navigate("/help")}
       >
         {!collapsed && "Help"}
-      </Menu.Item>
+      </Menu.Item> */}
       <Menu.Item
         key="/settings"
         icon={<FontAwesomeIcon icon={faGear} style={{ fontSize: "23px" }} />}
