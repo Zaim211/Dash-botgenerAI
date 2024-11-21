@@ -16,6 +16,8 @@ router.get('/data', DataController.getdata);
 router.get('/lead/:id', DataController.getdataById);
 router.put('/lead/:id', DataController.updateDataById);
 router.delete("/lead/:id", DataController.deleteDataById);
+router.get("/search", DataController.searchData);
+router.put('/updateStatusLead/:id', DataController.updateStatusLead);
 
 
 module.exports = router;
