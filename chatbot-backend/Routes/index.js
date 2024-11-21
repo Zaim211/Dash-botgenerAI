@@ -15,6 +15,7 @@ router.post('/data', DataController.data);
 router.get('/data', DataController.getdata);
 router.get('/lead/:id', DataController.getdataById);
 router.put('/lead/:id', DataController.updateDataById);
+router.delete("/lead/:id", DataController.deleteDataById);
 
 
 module.exports = router;

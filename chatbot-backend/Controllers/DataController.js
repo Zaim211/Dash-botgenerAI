@@ -45,10 +45,13 @@ class DataController {
   }
   static async updateDataById(req, res) {
     try {
-      const { id } = req.params; // Get the ID from the URL params
-      const updatedData = req.body; // Get the updated data from the request body
+      const { id } = req.params; 
+      if (!id) {
+        return res.status(400).json({ message: "ID is required" });
+      }
+      const updatedData = req.body; 
 
-      // Find the chat by ID and update it
+     
       const chat = await Chat.findByIdAndUpdate(id, updatedData, { new: true });
 
       if (!chat) {
@@ -59,6 +62,24 @@ class DataController {
     } catch (error) {
       console.error("Error updating chat:", error);
       res.status(500).json({ message: "Error updating chat", error });
+    }
+  }
+
+  static async deleteDataById(req, res) {
+    try {
+      const { id } = req.params;
+      const updatedData = req.body;
+
+      const chat = await Chat.findByIdAndDelete(id, updatedData, { new: true });
+
+      if (!chat) {
+        return res.status(404).json({ message: "Chat not found" });
+      }
+
+      res.status(200).json({ message: "Chat deleted successfully", chat });
+    } catch (error) {
+      console.error("Error deleting chat:", error);
+      res.status(500).json({ message: "Error deleting chat", error });
     }
   }
 }
