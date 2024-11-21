@@ -3,7 +3,6 @@ import axios from "axios";
 import {
   Spin,
   Table,
-  Typography,
   Alert,
   Select,
   Input as AntdInput,
@@ -11,8 +10,9 @@ import {
   Popconfirm,
   Space,
   message,
+  Input,
 } from "antd";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   EditOutlined,
   DeleteOutlined,
@@ -31,7 +31,8 @@ const Leads = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [selectedLeads, setSelectedLeads] = useState([]);
   const navigate = useNavigate();
-  const { id } = useParams()
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
   const handlePageChange = (value) => {
     setCurrentPage(value);
@@ -225,6 +226,15 @@ const Leads = () => {
     },
     selectedRowKeys: selectedLeads,
   };
+  const handleColumnSearch = (e, columnKey) => {
+    const value = e.target.value.toLowerCase();
+    const filteredData = chatData.filter(record => {
+      // Check if the column value contains the search input
+      return record[columnKey]?.toString().toLowerCase().includes(value);
+    });
+    setFilteredData(filteredData); 
+  };
+  
 
   return (
     <div className=" bg-gray-50 h-full mb-6 rounded-md">
@@ -244,30 +254,41 @@ const Leads = () => {
 
         <span className="font-thin text-gray-600">résultats par page</span>
 
-        <div className="flex items-center ml-auto">
-          <AntdInput
-            placeholder="Search..."
-            prefix={<SearchOutlined />}
-            style={{
-              borderRadius: "999px",
-              padding: "0.5rem 1rem",
-              maxWidth: "300px",
-              background: "#fff",
-            }}
-          />
-        </div>
-        <Button type="primary" className="text-lg font-semibold px-4 py-5">
+{/*        
+        <Button type="primary" className="text-lg justify-end flex font-semibold px-4 py-5">
           Extraction via Email
-        </Button>
+        </Button> */}
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-4">
         <Table
-          columns={columns}
+          // columns={columns}
           dataSource={chatData.slice(
             (currentPage - 1) * pageSize,
             currentPage * pageSize
           )}
+          columns={[
+            ...columns.map(col => ({
+              ...col,
+              title: (
+                <div className="flex flex-col items-center">
+            <div className="text-xs">{col.title}</div>
+            {/* Search Input under each column */}
+            {col.key !== "action" && (
+              <Input
+                placeholder={`${col.title}`}
+                // prefix={<SearchOutlined />}
+                onChange={(e) => handleColumnSearch(e, col.key)}
+                className="mt-2"
+                size="medium"
+                style={{ width: "120%" }}
+                placeholderStyle={{ fontSize: "2px" }}
+              />
+            )}
+          </div>
+              ),
+            })),
+          ]}
           rowKey={(record) => record._id}
           pagination={false}
           bordered
