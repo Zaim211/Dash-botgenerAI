@@ -5,7 +5,6 @@ import {
   Table,
   Alert,
   Select,
-  Input as AntdInput,
   Button,
   Popconfirm,
   Space,
@@ -14,10 +13,9 @@ import {
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import {
-  EditOutlined,
+
   DeleteOutlined,
-  UploadOutlined,
-  SearchOutlined,
+
 } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -34,12 +32,15 @@ const Leads = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
 
+
   const handlePageChange = (value) => {
     setCurrentPage(value);
   };
   const handleCoachClick = (chatData) => {
     navigate(`/lead/${chatData._id}`);
   };
+
+ 
 
   const totalPages = Math.ceil(chatData.length / pageSize);
 
@@ -49,6 +50,7 @@ const Leads = () => {
         const response = await axios.get("/data"); // Adjust to match your backend URL
         console.log("Fetched data:", response.data);
         setChatData(response.data.chatData);
+        setFilteredData(response.data.chatData);
       } catch (err) {
         setError("Failed to fetch data");
       } finally {
@@ -59,39 +61,91 @@ const Leads = () => {
     getUserData();
   }, []);
 
-  const handleStatusLeadChange = (value, record) => {
-    console.log("Status Lead changed for", record._id, "to", value);
-    // Optionally, you could save this change to the backend.
-  };
+  // const handleStatusLeadChange = async (value, record) => {
+  //   try {
+  //     // Send the updated status to the backend
+  //     const response = await axios.put(`/updateStatusLead/${record._id}`, {
+  //       statusLead: value,
+  //     });
+  
+  //     // You can update the UI here or show a success message
+  //     console.log('Updated status successfully:', response.data);
+  //   } catch (error) {
+  //     console.error('Error updating status:', error);
+  //   }
+  // };
 
+  const handleStatusLeadChange = async (statusLead, record) => {
+    try {
+      const validStatuses = ['nouveau', 'prospect', 'client'];
+      if (statusLead === 'all') {
+        statusLead = 'nouveau'; // Treat 'all' as 'nouveau'
+      }
+      if (!validStatuses.includes(statusLead)) {
+        return res.status(400).json({ error: 'Invalid status value' });
+      }
+      const response = await axios.put(`/updateStatusLead/${record._id}`, {
+        statusLead,  // Ensure you're passing the statusLead in the body
+      });
+      console.log('Updated status:', response.data);
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`/lead/${id}`)
+      const response = await axios.delete(`/lead/${id}`);
 
       console.log("Chat deleted successfully:", response.data);
-      setChatData(chatData.filter((lead) => lead._id !== id)); 
+      setChatData(chatData.filter((lead) => lead._id !== id));
       message.success("Coach deleted successfully");
     } catch (error) {
       console.error("Error deleting coach:", error);
       message.error("Failed to delete coach");
     }
-  }
+  };
 
+  const handleColumnSearch = async (e, columnKey) => {
+    const value = e.target.value.toLowerCase();
+    setSearchQuery(value);
 
-  // Define table columns with NOM and EMAIL integrated
+    try {
+      if (value.trim() === '') {
+        // If empty, use the full chatData without making an API request
+        setFilteredData(chatData);
+        return;
+      }
+      console.log("Query:", value, "Column Key:", columnKey); 
+      const response = await axios.get("/search", {
+        params: {
+          query: value,
+          columnKey: columnKey,
+        },
+      });
+      setFilteredData(response.data);
+    } catch (error) {
+      console.error("Error in search:", error);
+      message.error("Error while searching.");
+    }
+  };
+  const dataToDisplay = searchQuery ? filteredData : chatData;
+
   const columns = [
     {
       title: "NOM",
-      key: "request_name",
+      key: "request_name" || "request_email" || "request_add_email",
+      dataIndex: "request_name" || "request_email" || "request_add_email",
       render: (text, record) => (
-        <div className="cursor-pointer"
-        onClick={() => handleCoachClick(record)}>
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
           <div>{record.request_name || "-"}</div>
-           <div className="text-gray-500 text-xs">
-          {record.verification_email === "Non"
-            ? record.request_add_email || "-" 
-            : record.request_email || "-"}    
-        </div>
+          <div className="text-gray-500 text-xs">
+            {record.verification_email === "Non"
+              ? record.request_add_email || "-"
+              : record.request_email || "-"}
+          </div>
         </div>
       ),
     },
@@ -108,8 +162,10 @@ const Leads = () => {
           minute: "2-digit",
         });
         return (
-          <div className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}>
+          <div
+            className="cursor-pointer"
+            onClick={() => handleCoachClick(record)}
+          >
             <div>{day}</div>
             <div className="text-gray-500 text-sm">{time}</div>
           </div>
@@ -140,13 +196,13 @@ const Leads = () => {
       key: "statusLead",
       render: (text, record) => (
         <Select
-          defaultValue="nouveau"
+          defaultValue={record.type}
           style={{ width: 80 }}
           onChange={(value) => handleStatusLeadChange(value, record)}
         >
-          <Option value="nouveau">Nouveau</Option>
+          <Option value="all">Nouveau</Option>
           <Option value="prospect">Prospect</Option>
-          <Option value="validé">Client</Option>
+          <Option value="client">Client</Option>
         </Select>
       ),
     },
@@ -156,11 +212,12 @@ const Leads = () => {
       key: "choose_course",
       render: (text, record) => (
         <div className="text-gray-500 text-xs">
-       { record.program_interest ||
-        record.employee_training ||
-        record.choose_course ||
-        record.choose_course_salarie ||
-        "-"},
+          {record.program_interest ||
+            record.employee_training ||
+            record.choose_course ||
+            record.choose_course_salarie ||
+            "-"}
+          ,
         </div>
       ),
     },
@@ -172,7 +229,8 @@ const Leads = () => {
     },
     {
       title: "STATUS",
-      key: "status",
+      dataIndex: "not_talk" || "remmberme",
+      key: "not_talk" || "remmberme",
       render: (text, record) => record.remmberme || record.not_talk || "-",
     },
     {
@@ -198,6 +256,8 @@ const Leads = () => {
     },
   ];
 
+  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSpinner(true);
@@ -207,7 +267,6 @@ const Leads = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Mock loading completion (replace with actual loading logic)
   useEffect(() => {
     const fakeLoad = setTimeout(() => {
       setLoading(false);
@@ -226,15 +285,6 @@ const Leads = () => {
     },
     selectedRowKeys: selectedLeads,
   };
-  const handleColumnSearch = (e, columnKey) => {
-    const value = e.target.value.toLowerCase();
-    const filteredData = chatData.filter(record => {
-      // Check if the column value contains the search input
-      return record[columnKey]?.toString().toLowerCase().includes(value);
-    });
-    setFilteredData(filteredData); 
-  };
-  
 
   return (
     <div className=" bg-gray-50 h-full mb-6 rounded-md">
@@ -253,39 +303,32 @@ const Leads = () => {
         </Select>
 
         <span className="font-thin text-gray-600">résultats par page</span>
-
-{/*        
-        <Button type="primary" className="text-lg justify-end flex font-semibold px-4 py-5">
-          Extraction via Email
-        </Button> */}
       </div>
 
       <div className="bg-white rounded-lg shadow-md p-4">
         <Table
-          // columns={columns}
-          dataSource={chatData.slice(
+          dataSource={dataToDisplay.slice(
             (currentPage - 1) * pageSize,
             currentPage * pageSize
           )}
           columns={[
-            ...columns.map(col => ({
+            ...columns.map((col) => ({
               ...col,
               title: (
                 <div className="flex flex-col items-center">
-            <div className="text-xs">{col.title}</div>
-            {/* Search Input under each column */}
-            {col.key !== "action" && (
-              <Input
-                placeholder={`${col.title}`}
-                // prefix={<SearchOutlined />}
-                onChange={(e) => handleColumnSearch(e, col.key)}
-                className="mt-2"
-                size="medium"
-                style={{ width: "120%" }}
-                placeholderStyle={{ fontSize: "2px" }}
-              />
-            )}
-          </div>
+                  <div className="text-xs">{col.title}</div>
+                  {col.key !== "action" && (
+                    <Input
+                      placeholder={`${col.title}`}
+                      onChange={(e) => handleColumnSearch(e, col.key)}
+                      className="mt-2"
+                      size="medium"
+                      style={{ width: "120%" }}
+                      placeholderStyle={{ fontSize: "2px" }}
+               
+                    />
+                  )}
+                </div>
               ),
             })),
           ]}

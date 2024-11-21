@@ -90,10 +90,13 @@ nav a {
 .ant-table td {
   font-size: 12px; /* Adjust the size as needed */
 }
+.ant-input::placeholder {
+  font-size: 12px; /* Adjust the value as needed */
+}
 
 /* Reduce the font size for table headers */
 .ant-table th {
-  font-size: 12px; /* Adjust the size for header titles */
+  font-size: 2px; /* Adjust the size for header titles */
 }
 
 /* Optionally reduce the padding for a more compact table */
