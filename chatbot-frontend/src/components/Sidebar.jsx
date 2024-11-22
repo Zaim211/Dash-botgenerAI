@@ -86,16 +86,16 @@ const SideBar = () => {
       ),
       label: "Programmes",
     },
-    {
-      key: "/entreprise",
-      icon: (
-        <FontAwesomeIcon
-          icon={faFlag}
-          style={{ fontSize: "23px", marginRight: "10px" }}
-        />
-      ),
-      label: "Entreprises",
-    },
+    // {
+    //   key: "/entreprise",
+    //   icon: (
+    //     <FontAwesomeIcon
+    //       icon={faFlag}
+    //       style={{ fontSize: "23px", marginRight: "10px" }}
+    //     />
+    //   ),
+    //   label: "Entreprises",
+    // },
     {
       key: "/campagnes",
       icon: (
