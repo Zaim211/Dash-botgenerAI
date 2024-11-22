@@ -2,6 +2,8 @@ const { Router } = require('express');
 const AppController = require('../Controllers/AppController');
 const AuthenticationController = require('../Controllers/AuthenticationController');
 const DataController = require('../Controllers/DataController');
+const AdsController = require('../Controllers/AdsController');
+const BannerController = require('../Controllers/BannerController');
 const router = Router();
 
 router.get("/", AppController.test);
@@ -19,5 +21,17 @@ router.delete("/lead/:id", DataController.deleteDataById);
 router.get("/search", DataController.searchData);
 router.put('/updateStatusLead/:id', DataController.updateStatusLead);
 
+
+router.post('/banner', AdsController.createBanner);
+router.get('/banner', AdsController.getBanners);
+router.delete("/banner/:id", AdsController.deleteBanner);
+router.put('/banner/:id', AdsController.updateBanner);
+router.get('/banner/:id', AdsController.getBannerById);
+
+
+router.patch("/banner/:id/toggle-ad-status", BannerController.toggleAdStatus);
+
+// Get ad metrics for a specific banner
+router.get("/banner/:id/ad-data", BannerController.getAdMetrics);
 
 module.exports = router;
