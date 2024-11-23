@@ -61,19 +61,6 @@ const Leads = () => {
     getUserData();
   }, []);
 
-  // const handleStatusLeadChange = async (value, record) => {
-  //   try {
-  //     // Send the updated status to the backend
-  //     const response = await axios.put(`/updateStatusLead/${record._id}`, {
-  //       statusLead: value,
-  //     });
-  
-  //     // You can update the UI here or show a success message
-  //     console.log('Updated status successfully:', response.data);
-  //   } catch (error) {
-  //     console.error('Error updating status:', error);
-  //   }
-  // };
 
   const handleStatusLeadChange = async (statusLead, record) => {
     try {
