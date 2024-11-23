@@ -13,31 +13,31 @@ const MagicSms = () => {
   const [smsSentStatus, setSmsSentStatus] = useState({});
 
   const handleSendSms = async (request_phone) => {
-    // if (!request_phone) {
-    //   setError('Phone number is required.');
-    //   return;
-    // }
+    if (!request_phone) {
+      setError('Phone number is required.');
+      return;
+    }
   
-    // const message = "Hello! This is your predefined message."; // Or, you can allow the user to input a message
+    const message = "Hello! This is your predefined message."; // Or, you can allow the user to input a message
   
-    // setLoading(true);
-    // setError(null);
+    setLoading(true);
+    setError(null);
   
-    // try {
-    //   const response = await axios.post('/send-sms', { request_phone, message }); // Send both phone and message
+    try {
+      const response = await axios.post('/send-sms', { request_phone, message }); // Send both phone and message
   
-    //   if (response.data.success) {
-    //     alert('Message sent successfully!');
-    //     setSmsSentStatus((prev) => ({
-    //       ...prev,
-    //       [request_phone]: true, // Mark this phone as sent
-    //     }));
-    //   }
-    // } catch (err) {
-    //   setError('Failed to send message');
-    // } finally {
-    //   setLoading(false);
-    // }
+      if (response.data.success) {
+        alert('Message sent successfully!');
+        setSmsSentStatus((prev) => ({
+          ...prev,
+          [request_phone]: true, // Mark this phone as sent
+        }));
+      }
+    } catch (err) {
+      setError('Failed to send message');
+    } finally {
+      setLoading(false);
+    }
   };
   
 
