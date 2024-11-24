@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Spin, Table, Alert, Select, Button } from "antd";
+import { MailOutlined, MessageOutlined } from "@ant-design/icons";
 
 const MagicSms = () => {
   const [chatData, setChatData] = useState([]);
@@ -11,6 +12,7 @@ const MagicSms = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const [selectedLeads, setSelectedLeads] = useState([]);
   const [smsSentStatus, setSmsSentStatus] = useState({});
+  const [emailSentStatus, setEmailSentStatus] = useState({});
 
   const handleSendSms = async (request_phone) => {
     if (!request_phone) {
@@ -62,6 +64,33 @@ const MagicSms = () => {
     getUserData();
   }, []);
 
+  const handleSendEmail = async (request_email) => {
+    if (!request_email) {
+      setError("Email is required.");
+      return;
+    }
+    console.log("Email:", request_email);
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.post("/send-email", { request_email }); // Send email and message
+
+      if (response.data.success) {
+        alert("Email sent successfully!");
+        setEmailSentStatus((prev) => ({
+          ...prev,
+          [request_email]: true, // Mark this email as sent
+        }));
+      }
+    } catch (err) {
+      setError("Failed to send email");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const columns = [
     {
       title: "NOM",
@@ -105,11 +134,12 @@ const MagicSms = () => {
       render: (text) => text || "-",
     },
     {
-      title: "Send SMS",
+      title: "SMS",
       key: "send_sms",
       render: (_, record) => (
         <Button
           type="primary"
+          icon={<MessageOutlined />}
           onClick={() => handleSendSms(record.request_phone)}
           style={{
             backgroundColor: smsSentStatus[record._id] ? "green" : "blue",
@@ -118,9 +148,32 @@ const MagicSms = () => {
           }}
           disabled={smsSentStatus[record._id]} // Disable if SMS already sent
         >
-          {smsSentStatus[record._id] ? "Sent" : "Send SMS"}
+          {smsSentStatus[record._id] ? "Sent" : "SMS"}
         </Button>
       ),
+      responsive: ['sm', 'md'],
+    },
+    {
+      title: "Email",
+      key: "send_email",
+      render: (_, record) => (
+        <Button
+          type="primary"
+          icon={<MailOutlined style={{
+            color: emailSentStatus[record.request_email] ? "white" : "white",
+          }}/>} // Adding the email icon
+          onClick={() => handleSendEmail(record.request_email)}
+          style={{
+            backgroundColor: emailSentStatus[record.request_email] ? "green" : "blue",
+            borderColor: emailSentStatus[record.request_email] ? "green" : "blue",
+            cursor: emailSentStatus[record.request_email] ? "not-allowed" : "pointer",
+          }}
+          disabled={emailSentStatus[record.request_email]}
+        >
+          {emailSentStatus[record.request_email] ? "Sent" : "Email"}
+        </Button>
+      ),
+      responsive: ['sm', 'md'],
     },
   ];
 

@@ -30,25 +30,20 @@ const Banner = () => {
     navigate("/create-bannières");
   };
 
-  const toggleActiveStatus = async (bannerId, currentStatus) => {
+  const handleToggleAdStatus = async (id, platform) => {
     try {
-      const response = await axios.patch(`/banner/${bannerId}`, {
-        isActive: !currentStatus, // Toggle the active status
-      });
-      const updatedBanners = banners.map((banner) =>
-        banner._id === bannerId
-          ? { ...banner, isActive: !currentStatus }
-          : banner
-      );
-      setBanners(updatedBanners);
-      message.success(
-        `Banner ${!currentStatus ? "Activated" : "Deactivated"} successfully!`
-      );
+        const response = await axios.patch(
+            `/banner/${id}/toggle-ad-status`,
+            { platform }
+        );
+  console.log("Response:", response.data);
     } catch (error) {
-      message.error("Failed to update banner status.");
-      console.error(error);
+        console.error("Error toggling ad status:", error);
+        alert("Error toggling ad status.");
     }
-  };
+};
+
+
   const handleDeleteBanner = async (bannerId) => {
     try {
       await axios.delete(`/banner/${bannerId}`); // Delete the banner by ID
@@ -83,7 +78,9 @@ const Banner = () => {
       <div className="p-2">
         <Row gutter={[16, 16]}>
           {banners.map((banner) => (
-            <Col span={8} key={banner._id}>
+            <Col span={8}  xs={32}
+            sm={24} 
+            md={10}  key={banner._id}>
               <Card
                 hoverable
                 cover={
@@ -100,9 +97,11 @@ const Banner = () => {
                 <div className="mt-4 flex justify-between items-center">
                   <Button
                     type={banner.isActive ? "primary" : "default"}
-                    onClick={() =>
-                      toggleActiveStatus(banner._id, banner.isActive)
-                    }
+                    onClick={() => {
+                      console.log("Banner ID:", banner._id);  // Check if banner._id exists
+                      console.log("Platform:", banner.platform);  // Check if banner.platform exists
+                      handleToggleAdStatus(banner._id, banner.platform); // Pass banner.platform
+                    }}
                   >
                     {banner.isActive ? "Deactivate" : "Activate"}
                   </Button>
