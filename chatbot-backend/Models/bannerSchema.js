@@ -61,6 +61,7 @@ const BannerSchema = new mongoose.Schema({
       },
       trim: true,
     },
+    isActive: { type: Boolean, default: false },
   },
 }, { timestamps: true });
 

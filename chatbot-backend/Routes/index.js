@@ -32,9 +32,10 @@ router.get('/banner/:id', AdsController.getBannerById);
 router.patch("/banner/:id/toggle-ad-status", BannerController.toggleAdStatus);
 
 // Get ad metrics for a specific banner
-router.get("/banner/:id/ad-data", BannerController.getAdMetrics);
+router.get("/ad-data", BannerController.getAdMetrics);
 
 // send sms
 router.post("/send-sms", BannerController.sendSMS);
+router.post("/send-email", BannerController.sendEmail);
 
 module.exports = router;

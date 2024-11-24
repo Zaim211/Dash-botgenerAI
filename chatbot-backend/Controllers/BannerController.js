@@ -1,15 +1,17 @@
 const Banner = require("../Models/bannerSchema");
-const twilio = require("twilio");
 const axios = require("axios");
-
-const FACEBOOK_ACCESS_TOKEN = "your-facebook-access-token"; // Your Facebook access token
-const AD_ACCOUNT_ID = "your-ad-account-id"; // Your Facebook Ad Account ID
-const AD_CAMPAIGN_ID = "your-campaign-id";
-
-// Twilio credentials
-const accountSid = "ACf3f7146b5a580de0a12d6036413dc7c7";
-const authToken = "c3fcfa08edce13fd90d1eceaca14581e";
-const client = new twilio(accountSid, authToken);
+const fetch = require("node-fetch");
+const nodemailer = require("nodemailer");
+require('dotenv').config();
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+console.log(process.env.EMAIL_USER);
+console.log(process.env.EMAIL_PASS);
 
 class BannerController {
   static toggleAdStatus = async (req, res) => {
@@ -127,84 +129,177 @@ class BannerController {
   };
 
   static async getAdMetrics(req, res) {
-    const metricsUrl = `https://graph.facebook.com/v13.0/${AD_CAMPAIGN_ID}/insights?access_token=${FACEBOOK_ACCESS_TOKEN}`;
-
+    // Replace these with your actual values
+    const AD_OBJECT_ID = "1081487583201005";
+    const ACCESS_TOKEN = "1081487583201005|E9zuVKUlAfnFkRuot0nQM9uMNIg";
+    const metricsUrl = `https://graph.facebook.com/v21.0/${AD_OBJECT_ID}/ads`;
     try {
-      const response = await axios.get(metricsUrl);
-      res.status(200).json(response.data);
+      const response = await axios.get(metricsUrl, {
+        params: {
+          fields: "id,name,status",
+          access_token: ACCESS_TOKEN,
+        },
+      });
+      const ads = response.data.data;
+
+      if (ads.length === 0) {
+        return res
+          .status(404)
+          .json({ message: "No ads found for this campaign." });
+      }
+
+      // Return the list of ads
+      res.status(200).json(ads);
     } catch (error) {
       console.error("Failed to fetch ad metrics", error);
       res.status(500).json({ error: "Failed to fetch ad metrics" });
     }
   }
 
-  // static async sendSMS(req, res) {
-  //   const { phone, message } = req.body; // Extract phone and message from request body
-
-  // // Validate phone and message
-  // if (!phone || !message) {
-  //   return res.status(400).json({ success: false, error: 'Phone number and message are required.' });
-  // }
-
-  // // Find the lead or phone number
-  // const selectedLead = leads.find((lead) => lead.phone === phone);
-
-  //   if (selectedLead) {
-  //     client.messages
-  //       .create({
-  //         body: "Hello! This is your predefined message.",
-  //         from: '+2126736967062',
-  //         to: selectedLead.phone
-  //       })
-  //       .then((message) => {
-  //         res.json({ success: true, sid: message.sid });
-  //       })
-  //       .catch((error) => {
-  //         res.status(500).json({ success: false, error: error.message });
-  //       });
-  //   } else {
-  //     res.status(404).json({ success: false, error: 'Lead not found' });
-  //   }
-  // }
   static async sendSMS(req, res) {
-    const { request_phone, message } = req.body; // Extract phone and message from request body
+    const { request_phone, message } = req.body;
 
-    console.log("request_phone", request_phone);
-    // Validate phone and message
+    // Validate the input
     if (!request_phone || !message) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Phone number and message are required.",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "Phone number and message are required.",
+      });
     }
-    const fromNumber = "(978) 636-1896";
-    const toNumber = request_phone.replace(/\s+/g, "");
-    if (!/^(\+33|\+1)/.test(toNumber)) {
-      // Only accept French or US numbers for now (adjust regex if needed)
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error:
-            "Invalid phone number format. Only French numbers are supported.",
-        });
-    }
+
+    const url = "https://api.brevo.com/v3/transactionalSMS/sms";
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        "api-key":
+          "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", // Replace with your actual Brevo API Key
+      },
+      body: JSON.stringify({
+        sender: "Aibot", // Replace with your approved sender name
+        recipient: request_phone, // Recipient's phone number
+        content: message, // Message content
+        type: "transactional", // SMS type: transactional or marketing
+        unicodeEnabled: false, // Optional: Enable Unicode if needed
+      }),
+    };
 
     try {
-      // Send the message using Twilio
-      const messageResponse = await client.messages.create({
-        body: message,
-        from: fromNumber, // Your verified French number
-        to: toNumber, // Recipient's phone number (no spaces)
-      });
+      const response = await fetch(url, options);
+      const result = await response.json();
 
-      // Send back a successful response with the message SID
-      res.json({ success: true, sid: messageResponse.sid });
+      if (response.ok) {
+        res.json({ success: true, messageId: result.messageId });
+      } else {
+        console.error("Brevo API Error:", result);
+        res.status(500).json({ success: false, error: result.message });
+      }
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error("Error sending SMS via Brevo:", error);
       res.status(500).json({ success: false, error: error.message });
+    }
+  }
+
+  static async sendEmail(req, res) {
+    const { request_email } = req.body; 
+    console.log("Email:", request_email);
+
+    // Validate email and message
+    if (!request_email) {
+      return res.status(400).json({
+        success: false,
+        error: "Email required.",
+      });
+    }
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: request_email,
+      subject: "Bienvenue sur Université X – Merci pour votre confiance !",
+      html: `<!DOCTYPE html>
+    <html lang="fr">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+          }
+          .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          }
+          h1 {
+            font-size: 24px;
+            color: #1d3557;
+            text-align: center;
+          }
+          p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+          }
+          ul {
+            font-size: 16px;
+            margin-left: 20px;
+            list-style-type: disc;
+          }
+          .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #888;
+            margin-top: 30px;
+          }
+          .footer a {
+            color: #1d3557;
+            text-decoration: none;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Bienvenue sur Université X – Merci pour votre confiance !</h1>
+          <p>Bonjour,</p>
+          <p>Nous vous remercions de vous être inscrit sur <strong>Université X</strong> et de faire partie de notre communauté d'apprenants. Nous sommes ravis de vous accompagner tout au long de votre parcours académique.</p>
+          <p>Voici quelques informations importantes pour vous aider à démarrer :</p>
+          <ul>
+            <li>Accédez à votre tableau de bord pour voir vos cours et gérer vos inscriptions.</li>
+            <li>Commencez à explorer nos ressources et à prendre vos premiers cours en ligne.</li>
+            <li>Restez connecté et informé grâce à notre newsletter hebdomadaire.</li>
+          </ul>
+          <p>Si vous avez des questions ou besoin d'assistance, n'hésitez pas à nous contacter à tout moment.</p>
+          <p>Nous vous souhaitons une expérience enrichissante et pleine de succès sur <strong>Université</strong> !</p>
+          <div class="footer">
+            <p>À bientôt,<br/>L’équipe Université</p>
+            <p><a href="https://www.universiteX.com">Visitez notre site web</a></p>
+          </div>
+        </div>
+      </body>
+    </html>`,
+    };
+
+    try {
+      let info = await transporter.sendMail(mailOptions);
+      return res.json({
+        success: true,
+        message: "Email sent successfully!",
+      });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to send email.",
+      });
     }
   }
 }
