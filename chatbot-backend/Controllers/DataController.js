@@ -64,6 +64,48 @@ class DataController {
       res.status(500).json({ message: "Error updating chat", error });
     }
   }
+ 
+  static async addComment(req, res) {
+    const { id } = req.params; // Lead ID
+    const { text, name } = req.body;
+    console.log("Adding comment to lead:", id, "Comment:", text, "User:", name);
+    if (!name) {
+      return res.status(400).json({ message: "Name is required for the comment" });
+    }
+  
+  
+    try {
+      // Trouver le lead par ID
+      const lead = await Chat.findById(id);
+      if (!lead) {
+        return res.status(404).json({ message: "Lead not found" });
+      }
+  
+      // Vérifier ou initialiser les commentaires
+      if (!lead.commentaires) {
+        lead.commentaires = [];
+      }
+  
+      // Ajouter un nouveau commentaire
+      const newComment = {
+        text,
+        addedBy: { name }, 
+        addedAt: new Date(),
+      };
+      lead.commentaires.push(newComment);
+  
+      // Sauvegarder le lead avec le nouveau commentaire
+      await lead.save();
+  
+      return res
+        .status(200)
+        .json({ message: "Comment added successfully", commentaires: lead.commentaires });
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+  
 
   static async deleteDataById(req, res) {
     try {
@@ -134,32 +176,6 @@ class DataController {
   }
 
   static async updateStatusLead(req, res) {
-    // try {
-    //   const { statusLead } = req.body;
-    //   const { id } = req.params;
-  
-    //   // Validate the status value
-    //   const validStatuses = ['nouveau', 'prospect', 'client'];
-    //   if (!validStatuses.includes(statusLead)) {
-    //     return res.status(400).json({ error: 'Invalid status value' });
-    //   }
-  
-    //   // Find and update the record
-    //   const updatedChat = await Chat.findByIdAndUpdate(
-    //     id,
-    //     { statusLead },
-    //     { new: true } // Return the updated document
-    //   );
-  
-    //   if (!updatedChat) {
-    //     return res.status(404).json({ error: 'Chat not found' });
-    //   }
-  
-    //   res.status(200).json(updatedChat);
-    // } catch (error) {
-    //   console.error("Error updating status:", error);
-    //   res.status(500).json({ error: "Internal Server Error" });
-    // }
     const { id } = req.params; // Get the lead's ID from the URL
   const { statusLead } = req.body; // Get the new statusLead from the request body
 
@@ -189,6 +205,41 @@ class DataController {
     res.status(500).json({ error: 'Internal server error' });
   }
 }
+
+static deleteComment = async (req, res) => {
+  const { id, commentId } = req.params;
+  console.log('Deleting comment:', commentId, 'from chat:', id);
+
+  try {
+    // Find the chat document by its ID
+    const chat = await Chat.findById(id);
+    if (!chat) {
+      return res.status(404).json({ message: 'Chat not found' });
+    }
+
+    // Find the index of the comment by its commentId
+    const commentIndex = chat.commentaires.findIndex(
+      (comment) => comment._id.toString() === commentId
+    );
+
+    console.log('Comment index:', commentIndex);
+
+    if (commentIndex === -1) {
+      return res.status(404).json({ message: 'Comment not found' });
+    }
+
+    // Remove the comment from the `commentaires` array
+    chat.commentaires.splice(commentIndex, 1);
+
+    // Save the updated chat document
+    await chat.save();
+
+    return res.status(200).json({ message: 'Comment deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};
 
 }
 

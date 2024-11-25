@@ -20,6 +20,8 @@ router.put('/lead/:id', DataController.updateDataById);
 router.delete("/lead/:id", DataController.deleteDataById);
 router.get("/search", DataController.searchData);
 router.put('/updateStatusLead/:id', DataController.updateStatusLead);
+router.put('/add-comment/:id', DataController.addComment);
+router.delete('/lead/:id/delete-comment/:commentId', DataController.deleteComment);
 
 
 router.post('/banner', AdsController.createBanner);

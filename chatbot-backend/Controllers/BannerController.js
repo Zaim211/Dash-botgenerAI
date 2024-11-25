@@ -287,7 +287,6 @@ class BannerController {
       </body>
     </html>`,
     };
-
     try {
       let info = await transporter.sendMail(mailOptions);
       return res.json({
