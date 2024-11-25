@@ -284,7 +284,7 @@ const LeadDetailsPage = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-600">No comments yet.</p>
+                    <p className="text-gray-600">Aucun commentaire pour le moment.</p>
                   )}
                 </div>
               </div>
