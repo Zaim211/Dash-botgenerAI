@@ -13,6 +13,8 @@ import CreateBannières from "./pages/CreateBannières";
 import LeadDetailsPage from "./pages/LeadDetailsPage";
 import Banner from "./pages/Banner";
 import MagicSms from "./pages/MagicSms";
+import Setting from "./pages/Setting";
+import CommentairePage from "./pages/CommentairePage";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -32,9 +34,14 @@ function App() {
             <Route path="/bannières" element={<Banner />} />
             <Route path="/create-bannières" element={<CreateBannières />} />
             <Route path="/create-bannières/:id" element={<CreateBannières />} />
-            <Route path="/lead/:id" element={<LeadDetailsPage />}/>
+            {/* <Route path="/lead/:id" element={<LeadDetailsPage />}/> */}
 
             <Route path="/magic-sms" element={<MagicSms />} />
+            <Route path="/settings" element={<Setting />} />
+            <Route path="/lead/:id" element={<LeadDetailsPage />}>
+      <Route path="" element={<LeadDetailsPage />} /> {/* Default Tab */}
+      <Route path="commentaires" element={<CommentairePage />} />
+    </Route>
           </Route>
           {/* Separate routes for authentication */}
           <Route path="/SignIn" element={<SignIn />} />

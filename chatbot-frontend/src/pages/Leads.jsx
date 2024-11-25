@@ -243,7 +243,6 @@ const Leads = () => {
     },
   ];
 
-  
 
   useEffect(() => {
     const timer = setTimeout(() => {

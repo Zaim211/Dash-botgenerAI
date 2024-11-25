@@ -1,6 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Tabs, Button, Input } from "antd";
+import { jwtDecode } from "jwt-decode";
+import { DeleteOutlined } from '@ant-design/icons';
+
+const { TabPane } = Tabs;
 
 const LeadDetailsPage = () => {
   const { id } = useParams();
@@ -8,13 +13,35 @@ const LeadDetailsPage = () => {
   const [lead, setLead] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({});
+  const [activeTab, setActiveTab] = useState("1");
+  const [newComment, setNewComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const token = localStorage.getItem("token");
+  const decodedToken = token ? jwtDecode(token) : "";
+
+  console.log("Decoded Token:", decodedToken);
+
+  const handleTabChange = (key) => {
+    setActiveTab(key);
+    navigate(key === "2" ? `/lead/${id}/commentaires` : `/lead/${id}`);
+  };
+
+  useEffect(() => {
+    // Set the active tab based on the route
+    if (window.location.pathname.includes("commentaires")) {
+      setActiveTab("2");
+    } else {
+      setActiveTab("1");
+    }
+  }, [window.location.pathname]);
 
   useEffect(() => {
     const fetchLead = async () => {
       try {
         const response = await axios.get(`/lead/${id}`);
         setLead(response.data.chat);
-        setFormData(response.data.chat); // Initialize form data with fetched lead details
+        setComments(response.data.chat.commentaires || []);
+        setFormData(response.data.chat);
       } catch (error) {
         console.error("Error fetching lead details:", error);
       }
@@ -28,17 +55,53 @@ const LeadDetailsPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = async () => {
-    try {
-      const chatId = formData.id;
+  const handleAddComment = async () => {
+    if (!newComment.trim()) return alert("Comment cannot be empty!");
 
-      const response = await axios.put(`/lead/${id}`, formData);
+    const token = localStorage.getItem("token");
+    const decodedToken = token ? jwtDecode(token) : null;
+    console.log("Decoded Token:", decodedToken);
+    if (!decodedToken) {
+      alert("User not authenticated");
+      return;
+    }
+
+    try {
+      const response = await axios.put(
+        `/add-comment/${id}`,
+        {
+          text: newComment,
+          name: decodedToken.name, // Send the name
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include token for backend validation if needed
+          },
+        }
+      );
+      console.log("Sending comment:", {
+        text: newComment,
+        name: decodedToken.name, // This should match the expected structure
+      });
 
       if (response.status === 200) {
-        // Handle successful save
+        alert("Comment added successfully!");
+        setComments(response.data.commentaires); // Update comments list
+        setNewComment(""); // Clear input field
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+      alert("Could not add comment, please try again.");
+    }
+  };
+
+  const handleSave = async () => {
+    try {
+      const response = await axios.put(`/lead/${id}`, formData);
+      if (response.status === 200) {
         alert("Changes saved successfully!");
-        setLead(formData); // Refetch the lead details after saving changes
-        setIsModalOpen(false); // Close the modal after saving changes
+        setLead(formData);
+        setIsModalOpen(false);
       }
     } catch (error) {
       console.error("Error saving changes:", error);
@@ -50,90 +113,183 @@ const LeadDetailsPage = () => {
     return <div className="text-center text-gray-600">Loading...</div>;
   }
 
+  const handleDeleteComment = async (commentId) => {
+    try {
+      const response = await axios.delete(`/lead/${id}/delete-comment/${commentId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.status === 200) {
+        alert("Comment deleted successfully!");
+        setComments(comments.filter(comment => comment._id !== commentId)); // Update comments list by removing the deleted comment
+      }
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+      alert("Could not delete comment, please try again.");
+    }
+  };
+
   return (
-    <div className="max-w-6xl mx-auto mt-10 p-6">
+    <div className="max-w-6xl mx-auto mt-10 p-2">
       {/* Page Title */}
       <div className="flex-1 mb-12">
-  <h1 className="text-center text-2xl font-bold text-gray-800">
-    Details Lead
-  </h1>
-
-  <div className="flex justify-center mb-4">
-    <span className="px-4 py-2 bg-purple-900 text-white font-bold rounded-full">
-      {lead.request_name}
-    </span>
-  </div>
-</div>
-
+        <h1 className="text-center text-2xl font-bold text-gray-800">
+          Details Lead
+        </h1>
+        <div className="flex justify-center mb-4">
+          <span className="px-4 py-2 bg-purple-900 text-white font-bold rounded-full">
+            {lead.request_name}
+          </span>
+        </div>
+      </div>
 
       {/* Two Boxes Side by Side */}
       <div className="flex justify-between space-x-4">
         <div className="flex-1 bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
-            Informations Lead
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Nom:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.request_name || "-"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Email:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.request_email || "-"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Téléphone:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.request_phone || "-"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Niveau d'Étude:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.course_details || lead.employee_training || "-"}
-              </p>
-            </div>
-          </div>
-        </div>
+          <Tabs activeKey={activeTab} onChange={handleTabChange}>
+            <TabPane tab="Informations" key="1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Column */}
+                <div className="space-y-4 mt-4">
+                  {[
+                    { label: "Nom", value: lead.request_name || "-" },
+                    { label: "Email", value: lead.request_email || "-" },
+                    { label: "Téléphone", value: lead.request_phone || "-" },
+                    {
+                      label: "Niveau d'Étude",
+                      value: lead.course_details || "-",
+                    },
+                  ].map(({ label, value }) => (
+                    <div className="flex items-center gap-2" key={label}>
+                      <p className="text-gray-600 font-semibold">{label}:</p>
+                      <p className="text-gray-800 font-semibold">{value}</p>
+                    </div>
+                  ))}
+                </div>
 
-        <div className="flex-1 bg-white shadow-md rounded-lg p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">
-            Additional Details
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Campus:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.student || lead.salarie_details || lead.découvrir || "-"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Speciality:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.program_interest ||
-                  lead.employee_training ||
-                  lead.choose_course ||
-                  lead.choose_course_salarie ||
-                  "-"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Duration:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.duration || lead.training_details || "-"}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-gray-600 font-semibold">Status:</p>
-              <p className="text-gray-800 font-semibold">
-                {lead.remmberme || lead.not_talk || "-"}
-              </p>
-            </div>
-          </div>
+                {/* Right Column */}
+                <div className="space-y-4 mt-4">
+                  {[
+                    { label: "Campus", value: lead.student || "-" },
+                    {
+                      label: "Specialty",
+                      value:
+                        lead.program_interest ||
+                        lead.employee_training ||
+                        lead.choose_course ||
+                        lead.choose_course_salarie ||
+                        "-",
+                    },
+                    { label: "Duration", value: lead.duration || "-" },
+                    {
+                      label: "Status",
+                      value: lead.remmberme || lead.not_talk || "-",
+                    },
+                  ].map(({ label, value }) => (
+                    <div className="flex items-center gap-2" key={label}>
+                      <p className="text-gray-600 font-semibold">{label}:</p>
+                      <p className="text-gray-800 font-semibold">{value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </TabPane>
+            {/* <TabPane tab="Commentaires" key="2">
+         
+              <div className="space-y-4">
+        
+                <div className="flex items-center gap-4">
+                  <Input
+                    placeholder="Add a comment..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="w-full border rounded-lg"
+                  />
+                  <Button
+                    type="primary"
+                    onClick={handleAddComment}
+                    className="bg-purple-800 text-white"
+                  >
+                    Submit
+                  </Button>
+                </div>
+                <div className="mt-4">
+                  {comments?.length ? (
+                    comments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="p-4 border rounded-lg mb-2 bg-gray-100"
+                      >
+                        <p className="text-gray-800">{comment.text}</p>
+                        <p className="text-gray-600 text-sm">
+                          Added by: {comment.addedBy?.name || "Unknown"}
+                        </p>
+                        <p className="text-gray-600 text-sm">
+                          {comment.addedAt
+                            ? new Date(comment.addedAt).toLocaleString()
+                            : "Unknown Date"}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-600">No comments yet.</p>
+                  )}
+                </div>
+              </div>
+            </TabPane> */}
+             <TabPane tab="Commentaires" key="2">
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  <Input
+                    placeholder="Add a comment..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="w-full border rounded-lg"
+                  />
+                  <Button
+                    type="primary"
+                    onClick={handleAddComment}
+                    className="bg-purple-800 text-white"
+                  >
+                    Submit
+                  </Button>
+                </div>
+                <div className="mt-4">
+                  {comments.length ? (
+                    comments.map((comment) => (
+                      <div
+                        key={comment._id}
+                        className="p-4 border rounded-lg mb-2 bg-gray-100"
+                      >
+                        <div className="flex justify-between">
+                          <div>
+                            <p className="text-gray-800">{comment.text}</p>
+                            <p className="text-gray-600 text-sm">
+                              Added by: {comment.addedBy?.name || "Unknown"}
+                            </p>
+                            <p className="text-gray-600 text-sm">
+                              {comment.addedAt
+                                ? new Date(comment.addedAt).toLocaleString()
+                                : "Unknown Date"}
+                            </p>
+                          </div>
+                          <Button
+                            type="text"
+                            icon={<DeleteOutlined />}
+                            onClick={() => handleDeleteComment(comment._id)}
+                          />
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-600">No comments yet.</p>
+                  )}
+                </div>
+              </div>
+            </TabPane>
+          </Tabs>
         </div>
       </div>
 
