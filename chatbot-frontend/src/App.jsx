@@ -18,6 +18,7 @@ import CommentairePage from "./pages/CommentairePage";
 import AffectuerLead from "./pages/AffectuerLead";
 import CommerciauxPage from "./pages/CommerciauxPage";
 import ListLeads from "./pages/Commercial/ListLeads";
+import Commands from "./pages/Commercial/Commands";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -43,6 +44,7 @@ function App() {
             <Route path="/list-leads" element={<ListLeads />} />
             <Route path="/magic-sms" element={<MagicSms />} />
             <Route path="/settings" element={<Setting />} />
+            <Route path="/command" element={<Commands />} />
             <Route path="/lead/:id" element={<LeadDetailsPage />}>
               <Route path="" element={<LeadDetailsPage />} />{" "}
               {/* Default Tab */}

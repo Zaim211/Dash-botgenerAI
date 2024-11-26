@@ -12,6 +12,7 @@ import {
   faBullhorn,
   faSignOutAlt,
   faUsers,
+  faFileContract
 } from "@fortawesome/free-solid-svg-icons";
 import { UserOutlined } from "@ant-design/icons";
 import { Layout, Menu, Divider, Avatar } from "antd";
@@ -80,6 +81,17 @@ const SideBar = () => {
         />
       ),
       label: "Contacts",
+      role: "Commercial",
+    },
+    {
+      key: "/command",
+      icon: (
+        <FontAwesomeIcon 
+        icon={faFileContract} 
+        style={{ fontSize: "23px", marginRight: "10px" }}
+        />
+      ),
+      label: "Comandes",
       role: "Commercial",
     },
     {
