@@ -24,6 +24,7 @@ router.get('/commercials/:id', AuthenticationController.getCommercialById);
 // affectaion de lead a un commercial
 router.post("/assign-leads", AffectationLeadController.affectLead);
 router.get('/assigned/:commercialId',  AffectationLeadController.getLeadsByCommercial);
+router.post('/unassign-leads', AffectationLeadController.desaffectLead);
 
 router.post('/data', DataController.data);
 router.get('/data', DataController.getdata);
