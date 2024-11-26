@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -12,13 +12,14 @@ import {
   faBullhorn,
   faSignOutAlt,
   faUsers,
-  faFileContract
+  faFileContract,
 } from "@fortawesome/free-solid-svg-icons";
 import { UserOutlined } from "@ant-design/icons";
 import { Layout, Menu, Divider, Avatar } from "antd";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import { UserContext } from "../UserContext";
+import { ToggleContext } from "./store/ToggleContext";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -31,11 +32,10 @@ const SideBar = () => {
   const { setToken } = useContext(UserContext);
   const [profileVisible, setProfileVisible] = useState(false);
   const [profileImage, setProfileImage] = useState("");
-  const [collapsed, setCollapsed] = useState(false);
+
+  const { collapsed, onClickHandler } = useContext(ToggleContext);
 
   const showProfile = () => setProfileVisible(true);
-
-  const toggleCollapsed = () => setCollapsed(!collapsed);
 
   const Logout = async () => {
     await axios.post("/logout");
@@ -86,9 +86,9 @@ const SideBar = () => {
     {
       key: "/command",
       icon: (
-        <FontAwesomeIcon 
-        icon={faFileContract} 
-        style={{ fontSize: "23px", marginRight: "10px" }}
+        <FontAwesomeIcon
+          icon={faFileContract}
+          style={{ fontSize: "23px", marginRight: "10px" }}
         />
       ),
       label: "Comandes",
@@ -105,7 +105,7 @@ const SideBar = () => {
       label: "Programmes",
       role: "Admin",
     },
-    
+
     {
       key: "/campagnes",
       icon: (
@@ -176,9 +176,26 @@ const SideBar = () => {
     },
   ];
 
-  const filteredItems = items.filter(
-    (item) => decodedToken?.role === item.role || !item.role
-  );
+  const filteredItems = items.filter((item) => {
+    if (item.role) {
+      return decodedToken.role === item.role;
+    }
+    return true;
+  });
+
+  const toggleSidebar = () => {
+    if (!decodedToken) {
+      // Set sidebar to collapsed if token is missing (not logged in)
+      onClickHandler(false);
+    } else {
+      // Set sidebar to expanded if token exists
+      onClickHandler(true);
+    }
+  };
+
+  useEffect(() => {
+    toggleSidebar();
+  }, []);
 
   const isActive = (path) =>
     location.pathname === path || location.pathname.startsWith(path);
@@ -193,7 +210,7 @@ const SideBar = () => {
     >
       <div
         className="absolute top-4 right-0 cursor-pointer text-purple-900 text-4xl"
-        onClick={toggleCollapsed}
+        onClick={onClickHandler}
       >
         <FontAwesomeIcon icon={faCaretLeft} />
       </div>
@@ -233,11 +250,7 @@ const SideBar = () => {
       >
         {filteredItems.map((item) =>
           item.children ? (
-            <SubMenu
-              key={item.key}
-              icon={item.icon}
-              title={!collapsed && item.label}
-            >
+            <SubMenu key={item.key} icon={item.icon} title={item.label}>
               {item.children.map((child) => (
                 <Menu.Item
                   key={child.key}
@@ -248,7 +261,7 @@ const SideBar = () => {
                       : "hover:bg-purple-900 hover:text-white"
                   }
                 >
-                  {!collapsed && child.label}
+                  {child.label}
                 </Menu.Item>
               ))}
             </SubMenu>
@@ -262,7 +275,7 @@ const SideBar = () => {
                   : "hover:bg-purple-900 hover:text-white"
               }
             >
-              {!collapsed && item.label}
+              {item.label}
             </Menu.Item>
           )
         )}
@@ -288,7 +301,7 @@ const SideBar = () => {
             }
             onClick={Logout}
           >
-            {!collapsed && "Logout"}
+            {"Logout"}
           </Menu.Item>
         </Menu>
       </div>
