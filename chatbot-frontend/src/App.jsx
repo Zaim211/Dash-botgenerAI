@@ -20,12 +20,15 @@ import CommerciauxPage from "./pages/CommerciauxPage";
 import ListLeads from "./pages/Commercial/ListLeads";
 import Commands from "./pages/Commercial/Commands";
 
+
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
 
 function App() {
+  
   return (
     <ToggleProvider>
+      <ToggleProvider></ToggleProvider>
       <UserContextProvider>
         <Routes>
           <Route path="/" element={<Layout />}>

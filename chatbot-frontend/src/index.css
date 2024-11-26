@@ -166,3 +166,11 @@ nav a {
   object-fit: cover; /* Ensures the image maintains aspect ratio and fills the container */
 }
 
+/* Ensures the sidebar content is always visible */
+.sidebar-content {
+  display: block;
+  visibility: visible;
+  overflow: visible;
+}
+
+
