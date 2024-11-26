@@ -48,27 +48,6 @@ const AffectuerLead = () => {
   };
   const totalPages = Math.ceil(chatData.length / pageSize);
 
-//   useEffect(() => {
-//     const getUserData = async () => {
-//       try {
-//         const response = await axios.get("/data");
-//         console.log("Fetched data:", response.data);
-
-//         // Filter chatData for type="all"
-//         const filteredData = response.data.chatData.filter(
-//           (chat) => chat.type === "all"
-//         );
-
-//         setChatData(filteredData);
-//       } catch (err) {
-//         setError("Failed to fetch data");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     getUserData();
-//   }, []);
 
 useEffect(() => {
     const getUserData = async () => {
@@ -117,18 +96,6 @@ useEffect(() => {
           },
         }
       );
-
-    //   const updatedLeads = chatData.map((lead) => {
-    //     if (selectedLeads.includes(lead._id)) {
-    //       return {
-    //         ...lead,
-    //         commercial: commercials.find(
-    //           (com) => com._id === values.commercial
-    //         ),
-    //       };
-    //     }
-    //     return chatData;
-    //   });
     const updatedLeads = chatData.map((lead) => {
         if (selectedLeads.includes(lead._id)) {
           return {
@@ -159,40 +126,40 @@ useEffect(() => {
   };
 
   const handleUnassign = async () => {
-    // try {
-    //   const token = localStorage.getItem("token");
-    //   if (!token) {
-    //     message.error("No token found, please login first");
-    //     return;
-    //   }
-    //   await axios.post(
-    //     "https://go-ko-9qul.onrender.com/coaches/unassign-coaches",
-    //     {
-    //       coachIds: selectedCoaches,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
-    //   const updatedCoaches = coaches.map((coach) => {
-    //     if (selectedCoaches.includes(coach._id)) {
-    //       return {
-    //         ...coach,
-    //         commercial: null,
-    //       };
-    //     }
-    //     return coach;
-    //   });
-    //   setCoaches(updatedCoaches);
-    //   message.success("Coaches unassigned from commercial successfully");
-    //   setIsUnassignModalVisible(false);
-    //   setSelectedCoaches([]);
-    // } catch (error) {
-    //   console.error("Error unassigning coaches:", error);
-    //   message.error("Failed to unassign coaches");
-    // }
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        message.error("No token found, please login first");
+        return;
+      }
+      await axios.post(
+        "/unassign-leads",
+        {
+          id: selectedLeads,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const updatedLeads = chatData.map((lead) => {
+        if (selectedLeads.includes(lead._id)) {
+          return {
+            ...lead,
+            commercial: null,
+          };
+        }
+        return lead;
+      });
+      setChatData(updatedLeads);
+      message.success("Leads unassigned from commercial successfully");
+      setIsUnassignModalVisible(false);
+      setSelectedLeads([]);
+    } catch (error) {
+      console.error("Error unassigning leads:", error);
+      message.error("Failed to unassign leads");
+    }
   };
 
   if (loading && showSpinner) return <Spin tip="Loading..." />;
@@ -205,10 +172,7 @@ useEffect(() => {
       key: "request_name" || "request_email" || "request_add_email",
       dataIndex: "request_name" || "request_email" || "request_add_email",
       render: (text, record) => (
-        <div
-          className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}
-        >
+        <div>
           <div>{record.request_name || "-"}</div>
           <div className="text-gray-500 text-xs">
             {record.verification_email === "Non"
@@ -231,10 +195,7 @@ useEffect(() => {
           minute: "2-digit",
         });
         return (
-          <div
-            className="cursor-pointer"
-            onClick={() => handleCoachClick(record)}
-          >
+          <div>
             <div>{day}</div>
             <div className="text-gray-500 text-sm">{time}</div>
           </div>
@@ -308,7 +269,7 @@ useEffect(() => {
       render: (text, record) => (
         <div>
           {record.commercial
-            ? `${record.commercial.nom} ${record.commercial.nom}`
+            ? `${record.commercial.prenom} ${record.commercial.nom}`
             : "N/A"}
         </div>
       ),
