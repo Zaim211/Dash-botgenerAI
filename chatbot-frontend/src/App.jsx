@@ -15,6 +15,9 @@ import Banner from "./pages/Banner";
 import MagicSms from "./pages/MagicSms";
 import Setting from "./pages/Setting";
 import CommentairePage from "./pages/CommentairePage";
+import AffectuerLead from "./pages/AffectuerLead";
+import CommerciauxPage from "./pages/CommerciauxPage";
+import ListLeads from "./pages/Commercial/ListLeads";
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -29,20 +32,24 @@ function App() {
             <Route index element={<Home />} />
             {/* Route for Leads at `/leads` */}
             <Route path="leads" element={<Leads />} />
-            <Route path='/programmes' element={<Programmes />} />
-            <Route path='/entreprise' element={<Entreprise />} />
+            <Route path="/programmes" element={<Programmes />} />
+            <Route path="/entreprise" element={<Entreprise />} />
             <Route path="/bannières" element={<Banner />} />
             <Route path="/create-bannières" element={<CreateBannières />} />
             <Route path="/create-bannières/:id" element={<CreateBannières />} />
             {/* <Route path="/lead/:id" element={<LeadDetailsPage />}/> */}
-
+            <Route path="/affect-leads" element={<AffectuerLead />} />
+            <Route path="/commerciaux" element={<CommerciauxPage />} />
+            <Route path="/list-leads" element={<ListLeads />} />
             <Route path="/magic-sms" element={<MagicSms />} />
             <Route path="/settings" element={<Setting />} />
             <Route path="/lead/:id" element={<LeadDetailsPage />}>
-      <Route path="" element={<LeadDetailsPage />} /> {/* Default Tab */}
-      <Route path="commentaires" element={<CommentairePage />} />
-    </Route>
+              <Route path="" element={<LeadDetailsPage />} />{" "}
+              {/* Default Tab */}
+              <Route path="commentaires" element={<CommentairePage />} />
+            </Route>
           </Route>
+         
           {/* Separate routes for authentication */}
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/SignUp" element={<SignUp />} />
