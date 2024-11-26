@@ -139,12 +139,12 @@ useEffect(() => {
         return lead; // Fix here, it was returning `chatData`
       });
       setChatData(updatedLeads);
-      message.success("Coaches assigned to commercial successfully");
+      message.success("Leads assigned to commercial successfully");
       setIsAssignModalVisible(false);
       setSelectedLeads([]);
     } catch (error) {
-      console.error("Error assigning coaches:", error);
-      message.error("Failed to assign coaches");
+      console.error("Error assigning leads:", error);
+      message.error("Failed to assign leads");
     }
   };
   const fetchCommercials = async () => {
@@ -358,11 +358,11 @@ useEffect(() => {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Affectation des Coachs</h1>
+      <h1 className="text-xl font-bold mb-4">Affectation des Leads</h1>
       <div className="flex-1 space-y-2 justify-between mb-4">
         <div>
           <Button type="primary" onClick={() => setIsAssignModalVisible(true)}>
-            Affecter les Coachs au Commercial
+            Affecter les Leads au Commercial
           </Button>
           <Button
             type="primary"
@@ -451,7 +451,7 @@ useEffect(() => {
         </Form>
       </Modal>
       <Modal
-        title="Désaffecter les Coachs du Commercial"
+        title="Désaffecter les Leads du Commercial"
         visible={isUnassignModalVisible}
         onCancel={() => setIsUnassignModalVisible(false)}
         footer={null}
