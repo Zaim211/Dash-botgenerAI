@@ -4,6 +4,7 @@ const AuthenticationController = require('../Controllers/AuthenticationControlle
 const DataController = require('../Controllers/DataController');
 const AdsController = require('../Controllers/AdsController');
 const BannerController = require('../Controllers/BannerController');
+const AffectationLeadController = require('../Controllers/AffectationLeadController');
 const router = Router();
 
 router.get("/", AppController.test);
@@ -12,6 +13,17 @@ router.post('/login', AuthenticationController.login);
 router.post('/register', AuthenticationController.register);
 router.post('/logout', AuthenticationController.logout);
 router.get('/profile', AuthenticationController.Getprofile);
+
+// commercial routes
+router.post('/commercials', AuthenticationController.createCommercial);
+router.get('/commercials', AuthenticationController.getAllCommercials);
+router.delete("/commercials/:id", AuthenticationController.deleteCommercialById);
+router.put('/commercials/:id', AuthenticationController.updateCommercialById);
+router.get('/commercials/:id', AuthenticationController.getCommercialById);
+
+// affectaion de lead a un commercial
+router.post("/assign-leads", AffectationLeadController.affectLead);
+router.get('/assigned/:commercialId',  AffectationLeadController.getLeadsByCommercial);
 
 router.post('/data', DataController.data);
 router.get('/data', DataController.getdata);

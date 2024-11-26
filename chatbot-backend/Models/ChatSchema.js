@@ -64,7 +64,8 @@ const chatSchema = new mongoose.Schema(
     training_details: { type: String, default: "" },
     verification_phone: { type: String, default: "" },
     verification_email: { type: String, default: "" },
-    commentaires: [commentSchema]
+    commentaires: [commentSchema],
+    commercial: { type: mongoose.Schema.Types.ObjectId, ref: 'Commercial' }, 
   },
   { timestamps: true }
 );
