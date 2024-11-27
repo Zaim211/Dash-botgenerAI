@@ -13,6 +13,7 @@ import {
   faSignOutAlt,
   faUsers,
   faFileContract,
+  faCog,
 } from "@fortawesome/free-solid-svg-icons";
 import { UserOutlined } from "@ant-design/icons";
 import { Layout, Menu, Divider, Avatar } from "antd";
@@ -42,6 +43,9 @@ const SideBar = () => {
     setToken(null);
     navigate("/SignIn");
   };
+  const handleSettingsClick = () => {
+    navigate("/settings");
+  };
 
   const getInitials = (name) => {
     const names = name?.split(" ");
@@ -59,7 +63,7 @@ const SideBar = () => {
         />
       ),
       label: "Dashboard",
-      role: "Admin",
+      role: ["Admin", "Manager"],
     },
     {
       key: "/leads",
@@ -70,7 +74,7 @@ const SideBar = () => {
         />
       ),
       label: "Contacts",
-      role: "Admin",
+      role: ["Admin", "Manager"],
     },
     {
       key: "/list-leads",
@@ -103,9 +107,19 @@ const SideBar = () => {
         />
       ),
       label: "Programmes",
-      role: "Admin",
+      role: ["Admin", "Manager"],
     },
-
+    {
+      label: "Affectation Leads",
+      role: ["Admin", "Manager"],
+      key: "/affect-leads",
+      icon: (
+        <FontAwesomeIcon
+          icon={faUserTag}
+          style={{ fontSize: "18px", marginRight: "10px" }}
+        />
+      ),
+    },
     {
       key: "/campagnes",
       icon: (
@@ -141,55 +155,42 @@ const SideBar = () => {
       ],
     },
     {
-      key: "/lead",
+      key: "settings",
       icon: (
-        <FontAwesomeIcon
-          icon={faUsers}
-          style={{ fontSize: "23px", marginRight: "10px" }}
-        />
+        <FontAwesomeIcon icon={faCog} style={{ fontSize: "23px", marginRight: "10px" }} />
       ),
-      label: "Leads Settings",
+      label: "Settings",
       role: "Admin",
-      children: [
-        {
-          key: "/commerciaux",
-          icon: (
-            <FontAwesomeIcon
-              icon={faUserTie}
-              style={{ fontSize: "23px", marginRight: "10px" }}
-            />
-          ),
-          label: "Commerciaux",
-        },
-
-        {
-          key: "/affect-leads",
-          label: "Affectation Leads",
-          icon: (
-            <FontAwesomeIcon
-              icon={faUserTag}
-              style={{ fontSize: "18px", marginRight: "10px" }}
-            />
-          ),
-        },
-      ],
+      onClick: handleSettingsClick,
     },
   ];
 
+
+
+  // const filteredItems = items.filter((item) => {
+  //   if (item.role) {
+  //     return decodedToken.role === item.role;
+  //   }
+  //   return true;
+  // });
   const filteredItems = items.filter((item) => {
     if (item.role) {
-      return decodedToken.role === item.role;
+      // Check if the user's role matches the item's role(s)
+      return Array.isArray(item.role)
+        ? item.role.includes(decodedToken.role)
+        : item.role === decodedToken.role;
     }
     return true;
   });
+  
 
   const toggleSidebar = () => {
     if (!decodedToken) {
       // Set sidebar to collapsed if token is missing (not logged in)
-      onClickHandler(false);
+      onClickHandler(true);
     } else {
       // Set sidebar to expanded if token exists
-      onClickHandler(true);
+      onClickHandler(false);
     }
   };
 
@@ -291,6 +292,14 @@ const SideBar = () => {
           selectedKeys={[location.pathname]}
           theme="white"
         >
+          {/* <Menu.Item
+            key="settings"
+            icon={<FontAwesomeIcon icon={faCog} style={{ fontSize: "23px" }} />}
+            onClick={handleSettingsClick}
+          >
+            {"Settings"}
+          </Menu.Item> */}
+
           <Menu.Item
             key="logout"
             icon={

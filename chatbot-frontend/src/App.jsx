@@ -43,7 +43,7 @@ function App() {
             <Route path="/create-bannières/:id" element={<CreateBannières />} />
             {/* <Route path="/lead/:id" element={<LeadDetailsPage />}/> */}
             <Route path="/affect-leads" element={<AffectuerLead />} />
-            <Route path="/commerciaux" element={<CommerciauxPage />} />
+            <Route path="/settings" element={<CommerciauxPage />} />
             <Route path="/list-leads" element={<ListLeads />} />
             <Route path="/magic-sms" element={<MagicSms />} />
             <Route path="/settings" element={<Setting />} />

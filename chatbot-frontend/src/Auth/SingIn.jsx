@@ -42,9 +42,10 @@ const SignIn = () => {
         navigate("/list-leads");  // Redirect to /list-leads if user is commercial
       } else if (decodedToken.role === "Admin") {
         navigate("/");  // Redirect to home if user is admin
-      } else {
-        // Handle any other roles or errors as needed
+      } else if (decodedToken.role === "Manager") {
         navigate("/");  // Default fallback route
+      } else {
+        navigate("/"); 
       }
     } catch (e) {
       alert("Connexion échouée. Veuillez réessayer plus tard");

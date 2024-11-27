@@ -16,10 +16,11 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  UploadOutlined,
-  UserOutlined,
+
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import ListAdmin from "./Admin/ListAdmin";
+import ListManager from "./Manager/ListManager";
+
 
 const getInitials = (prenom, nom) => {
   if (!prenom || !nom) return "";
@@ -32,9 +33,6 @@ const CommerciauxPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentCommercial, setCurrentCommercial] = useState(null);
   const [form] = Form.useForm();
-  const [uploading, setUploading] = useState(false);
-  const [uploadedFileName, setUploadedFileName] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
     fetchCommercials();
@@ -80,7 +78,6 @@ const CommerciauxPage = () => {
     setIsModalVisible(false);
     form.resetFields();
     setCurrentCommercial(null);
-    setUploadedFileName("");
   };
 
   const handleSave = async (values) => {
@@ -143,13 +140,14 @@ const CommerciauxPage = () => {
       title: "Actions",
       key: "actions",
       render: (text, record) => (
-        <span>
+        <div>
           <Button
             type="primary"
             icon={<EditOutlined style={{ color: "white" }} />}
             className="mr-2"
             style={{ backgroundColor: "green", borderColor: "green" }}
             onClick={() => handleEditCommercial(record)}
+            shape="circle"
           />
           <Popconfirm
             title="Êtes-vous sûr de vouloir supprimer ce commercial?"
@@ -161,16 +159,18 @@ const CommerciauxPage = () => {
               type="danger"
               icon={<DeleteOutlined style={{ color: "white" }} />}
               style={{ backgroundColor: "red", borderColor: "red" }}
+              shape="circle"
             />
           </Popconfirm>
-        </span>
+        </div>
       ),
     },
   ];
 
   return (
-    <div className="p-4 border rounded shadow-lg mt-4">
-      <h2 className="text-lg font-bold mb-4">Gestion des Commerciaux</h2>
+   <>
+     <div className="p-8 border rounded shadow-lg mt-4">
+      <h2 className="text-2xl font-bold mb-4">Gestion des Commerciaux</h2>
       <Button
         type="primary"
         icon={<PlusOutlined />}
@@ -247,6 +247,13 @@ const CommerciauxPage = () => {
         </Form>
       </Modal>
     </div>
+    <div className="p-4 border rounded shadow-lg mt-4">
+      <ListAdmin />
+    </div>
+    <div className="p-4 border rounded shadow-lg mt-4">
+      <ListManager />
+    </div>
+   </>
   );
 };
 
