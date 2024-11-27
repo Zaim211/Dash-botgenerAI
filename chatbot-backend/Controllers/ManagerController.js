@@ -1,4 +1,4 @@
-const {ManagerSchema} = require("../models/managerModel");
+const ManagerSchema = require("../Models/managerModel");
 const bcrypt = require("bcrypt");
 
 class ManagerController {
