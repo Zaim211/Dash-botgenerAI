@@ -19,7 +19,7 @@ class DataController {
   static async getdata(req, res) {
     try {
       // Retrieve all chat documents from the database
-      const chatData = await Chat.find().populate('commercial');
+      const chatData = await Chat.find().populate('commercial').populate('manager');
 
       // Send the chat data back to the client
       res.status(200).json({ chatData });

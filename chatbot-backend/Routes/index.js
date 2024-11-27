@@ -5,6 +5,8 @@ const DataController = require('../Controllers/DataController');
 const AdsController = require('../Controllers/AdsController');
 const BannerController = require('../Controllers/BannerController');
 const AffectationLeadController = require('../Controllers/AffectationLeadController');
+const AdminController = require('../Controllers/AdminController');
+const ManagerController = require('../Controllers/ManagerController');
 const router = Router();
 
 router.get("/", AppController.test);
@@ -21,10 +23,24 @@ router.delete("/commercials/:id", AuthenticationController.deleteCommercialById)
 router.put('/commercials/:id', AuthenticationController.updateCommercialById);
 router.get('/commercials/:id', AuthenticationController.getCommercialById);
 
+// manager routes
+router.post('/manager', ManagerController.createManager);
+router.get('/manager', ManagerController.getAllManager);
+router.delete("/manager/:id", ManagerController.deleteManagerById);
+router.put('/manager/:id', ManagerController.updateManagerById);
+router.get('/manager/:id', ManagerController.getManagerById);
+
 // affectaion de lead a un commercial
 router.post("/assign-leads", AffectationLeadController.affectLead);
 router.get('/assigned/:commercialId',  AffectationLeadController.getLeadsByCommercial);
 router.post('/unassign-leads', AffectationLeadController.desaffectLead);
+
+//Admin routes
+router.post('/admin', AdminController.createAdmin);
+router.get('/admin', AdminController.getAllAdmins);
+router.get('/admin/:id', AdminController.getAdminById);
+router.put('/admin/:id', AdminController.updateAdminById);
+router.delete('/admin/:id', AdminController.deleteAdminById);
 
 router.post('/data', DataController.data);
 router.get('/data', DataController.getdata);

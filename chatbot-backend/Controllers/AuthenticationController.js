@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const { Admin } = require("../Models/adminModel");
 const mongoose = require("mongoose");
 const CommercialSchema = require("../Models/commercialModel");
+const ManagerSchema = require("../Models/managerModel");
 
 // encrypting passwords
 const bcryptSalt = bcrypt.genSaltSync(10);
@@ -25,33 +26,33 @@ const debugBcrypt = async (plainTextPassword, hashedPassword) => {
 
 class AuthenticationController {
   static async login(req, res) {
-    // try {
-    //   const AdminDoc = await Admin.findOne({ email: req.body.email });
-
-    //   if (!AdminDoc) {
-    //     return res.status(404).send("Ce compte de Client nous le trouve pas");
-    //   }
-
-    //   const match = await debugBcrypt(req.body.password, AdminDoc.password);
-
-    //   if (!match) {
-    //     return res.status(401).send("Incorrect password");
-    //   }
-
-    //   const token = jwt.sign(
-    //     { userId: AdminDoc._id, email: AdminDoc.email, name: AdminDoc.name },
-    //     process.env.JWT_SECRET || "default_secret_key",
-    //     { expiresIn: "72h" }
-    //   );
-    //   console.log("token", token);
-
-    //   res.json({ token });
-    // } catch (error) {
-    //   console.error(error);
-    //   res.status(500).send("Internal Server Error");
-    // }
+   
     try {
       console.log("Request body:", req.body);
+
+      const manager = await ManagerSchema.findOne({ email: req.body.email });
+      if (manager) {
+        const match = await debugBcrypt(req.body.password, manager.password);
+  
+        if (!match) {
+          return res
+            .status(401)
+            .json({ message: "Incorrect manager password" });
+        }
+  
+        const token = jwt.sign(
+          {
+            userId: manager._id,
+            role: "Manager",
+            name: manager.nom + " " + manager.prenom,
+          },
+          process.env.JWT_SECRET || "default_secret_key",
+          { expiresIn: "72h" }
+        );
+
+        return res.json({ token });
+      
+      }
   
       const commercial = await CommercialSchema.findOne({ email: req.body.email });
       if (commercial) {
@@ -194,10 +195,10 @@ class AuthenticationController {
   // Mettre à jour un commercial par son ID
   static updateCommercialById = async (req, res) => {
     const { id } = req.params;
-    const { nom, prenom, email, phone, imageUrl, password } = req.body;
+    const { nom, prenom, email, phone, password } = req.body;
 
     try {
-      const updateData = { nom, prenom, email, phone, imageUrl };
+      const updateData = { nom, prenom, email, phone };
       if (password) {
         const hashedPassword = await bcrypt.hash(password, 10);
         updateData.password = hashedPassword;
