@@ -19,6 +19,7 @@ import AffectuerLead from "./pages/AffectuerLead";
 import CommerciauxPage from "./pages/CommerciauxPage";
 import ListLeads from "./pages/Commercial/ListLeads";
 import Commands from "./pages/Commercial/Commands";
+import CreatePrograms from "./pages/CreatePrograms";
 
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
@@ -41,6 +42,9 @@ function App() {
             <Route path="/bannières" element={<Banner />} />
             <Route path="/create-bannières" element={<CreateBannières />} />
             <Route path="/create-bannières/:id" element={<CreateBannières />} />
+            <Route path="/create-programmes" element={<CreatePrograms />} />
+            <Route path="/create-programmes/:id" element={<CreatePrograms />} />
+          
             {/* <Route path="/lead/:id" element={<LeadDetailsPage />}/> */}
             <Route path="/affect-leads" element={<AffectuerLead />} />
             <Route path="/settings" element={<CommerciauxPage />} />

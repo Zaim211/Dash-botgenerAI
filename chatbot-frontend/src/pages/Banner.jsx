@@ -78,9 +78,9 @@ const Banner = () => {
       <div className="p-2">
         <Row gutter={[16, 16]}>
           {banners.map((banner) => (
-            <Col span={8}  xs={32}
+            <Col span={8}  xs={64}
             sm={24} 
-            md={10}  key={banner._id}>
+            md={12}  key={banner._id}>
               <Card
                 hoverable
                 cover={

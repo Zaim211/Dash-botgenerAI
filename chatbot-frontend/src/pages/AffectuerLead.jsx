@@ -320,8 +320,8 @@ useEffect(() => {
   return (
     <div className="p-4">
       <h1 className="text-xl font-bold mb-4">Affectation des Leads</h1>
-      <div className="flex-1 space-y-2 justify-between mb-4">
-        <div>
+      <div className="flex-1 space-y-4 justify-between mb-4">
+        <div className="flex md:flex-row md:space-y-0 flex-col space-y-4">
           <Button type="primary" onClick={() => setIsAssignModalVisible(true)}>
             Affecter les Leads au Commercial
           </Button>
