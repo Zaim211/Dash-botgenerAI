@@ -197,7 +197,6 @@ const ListAdmin = () => {
 
   return (
     <div className="p-4">
-    
       <h1 className="text-2xl font-bold mb-4">Gestion des Admins</h1>
       <Button
         type=""
