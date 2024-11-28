@@ -2,39 +2,6 @@ const Banner = require("../Models/bannerSchema");
 const mongoose = require("mongoose");
 
 class AdsController {
-  // static async createBanner(req, res) {
-  //   try {
-  //     const { title, 
-  //       userId, 
-  //       mainText, 
-  //       imageUrl,  
-  //       platform,
-  //       facebookAdId,
-  //       youtubeAdId,
-  //       instagramAdId,  } = req.body;
-  //     const newBanner = new Banner({
-  //       title,
-  //       mainText,
-  //       imageUrl,
-  //       platform,
-  //       adsIds: {
-  //         facebookAdId,
-  //         youtubeAdId,
-  //         instagramAdId,
-  //       },
-  //       admin: userId,
-  //     });
-
-  //     const savedBanner = await newBanner.save();
-  //     res
-  //       .status(201)
-  //       .json({ message: "Banner created successfully!", form: savedBanner });
-  //   } catch (error) {
-  //     console.error("Error creating banner:", error);
-  //     res.status(500).json({ error: "Failed to create banner." });
-  //   }
-  // }
-
   static async createBanner(req, res) {
     try {
       const {
@@ -104,13 +71,11 @@ class AdsController {
     const { id } = req.params; 
 
     try {
-      const banner = await Banner.findById(id); // Find the banner by ID in the database
+      const banner = await Banner.findByIdAndDelete(id); // Find the banner by ID in the database
 
       if (!banner) {
         return res.status(404).json({ message: 'Banner not found' }); // Handle if the banner doesn't exist
       }
-
-      await banner.remove(); // Remove the banner from the database
 
       return res.status(200).json({ message: 'Banner deleted successfully' }); // Respond with success message
     } catch (error) {

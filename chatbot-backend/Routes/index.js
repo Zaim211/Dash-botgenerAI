@@ -7,6 +7,7 @@ const BannerController = require('../Controllers/BannerController');
 const AffectationLeadController = require('../Controllers/AffectationLeadController');
 const AdminController = require('../Controllers/AdminController');
 const ManagerController = require('../Controllers/ManagerController');
+const ProgramController = require('../Controllers/ProgramControlle');
 const router = Router();
 
 router.get("/", AppController.test);
@@ -68,5 +69,12 @@ router.get("/ad-data", BannerController.getAdMetrics);
 // send sms
 router.post("/send-sms", BannerController.sendSMS);
 router.post("/send-email", BannerController.sendEmail);
+
+// routes for program
+router.post('/program', ProgramController.createProgram);
+router.get('/program', ProgramController.getAllPrograms);
+router.get('/program/:id', ProgramController.getProgramById);
+router.put('/program/:id', ProgramController.updateProgramById);
+router.delete('/program/:id', ProgramController.deleteProgramById);
 
 module.exports = router;
