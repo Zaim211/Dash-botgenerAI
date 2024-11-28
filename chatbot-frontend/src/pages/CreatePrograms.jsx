@@ -201,7 +201,7 @@ const CreatePrograms = () => {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full"
+            className="bg-purple-800 text-white w-full"
             loading={loading}
           >
             {loading ? "Submitting..." : "Submit"}

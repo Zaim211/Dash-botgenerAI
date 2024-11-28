@@ -57,6 +57,7 @@ const Programmes = () => {
         <Button
           type="primary"
           icon={<PlusOutlined />}
+          className="bg-purple-800 text-white"
           onClick={handleCreateNewBanner}
         >
           Create programme

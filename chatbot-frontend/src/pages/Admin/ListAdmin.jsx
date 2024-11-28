@@ -134,9 +134,9 @@ const ListAdmin = () => {
             />
           ) : (
             <Avatar
-              style={{ backgroundColor: "navy" }}
+              style={{ backgroundColor: "" }}
               size={40}
-              className="mr-2"
+              className="mr-2 bg-purple-800 text-white"
             >
               {getInitials(record.name)}
             </Avatar>
@@ -200,9 +200,9 @@ const ListAdmin = () => {
     
       <h1 className="text-2xl font-bold mb-4">Gestion des Admins</h1>
       <Button
-        type="primary"
+        type=""
         onClick={() => setIsModalVisible(true)}
-        className="mb-4"
+        className="mb-4 bg-purple-800 text-white"
         icon={<PlusOutlined />}
       >
         Ajouter un Admin
@@ -251,7 +251,7 @@ const ListAdmin = () => {
             />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="" className="bg-purple-800 text-white" htmlType="submit">
               {currentAdmin ? "Mettre à jour" : "Créer"}
             </Button>
             <Button onClick={handleCancel} className="ml-2">

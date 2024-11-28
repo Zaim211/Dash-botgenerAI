@@ -67,6 +67,7 @@ const Banner = () => {
       <div className="mb-4">
         <Button
           type="primary"
+          className="bg-purple-800 text-white"
           icon={<PlusOutlined />}
           onClick={handleCreateNewBanner}
         >
