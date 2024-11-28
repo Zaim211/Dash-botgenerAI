@@ -112,9 +112,9 @@ const CommerciauxPage = () => {
             />
           ) : (
             <Avatar
-              style={{ backgroundColor: "navy" }}
+              style={{ backgroundColor: "" }}
               size={40}
-              className="mr-2"
+              className="mr-2 bg-purple-800 text-white"
             >
               {getInitials(record.prenom, record.nom)}
             </Avatar>
@@ -145,6 +145,7 @@ const CommerciauxPage = () => {
             type="primary"
             icon={<EditOutlined style={{ color: "white" }} />}
             className="mr-2"
+            
             style={{ backgroundColor: "green", borderColor: "green" }}
             onClick={() => handleEditCommercial(record)}
             shape="circle"
@@ -172,7 +173,8 @@ const CommerciauxPage = () => {
      <div className="p-8 border rounded shadow-lg mt-4">
       <h2 className="text-2xl font-bold mb-4">Gestion des Commerciaux</h2>
       <Button
-        type="primary"
+        type=""
+        className="bg-purple-800 text-white"
         icon={<PlusOutlined />}
         onClick={handleAddCommercial}
       >
@@ -237,7 +239,7 @@ const CommerciauxPage = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button type="" className="bg-purple-800 text-white" htmlType="submit">
               Enregistrer
             </Button>
             <Button onClick={handleCancel} className="ml-2">

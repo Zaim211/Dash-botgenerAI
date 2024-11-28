@@ -322,13 +322,13 @@ useEffect(() => {
       <h1 className="text-xl font-bold mb-4">Affectation des Leads</h1>
       <div className="flex-1 space-y-4 justify-between mb-4">
         <div className="flex md:flex-row md:space-y-0 flex-col space-y-4">
-          <Button type="primary" onClick={() => setIsAssignModalVisible(true)}>
+          <Button type="primary" className="bg-purple-800 text-white" onClick={() => setIsAssignModalVisible(true)}>
             Affecter les Leads au Commercial
           </Button>
           <Button
             type="primary"
             onClick={() => setIsUnassignModalVisible(true)}
-            className="ml-2"
+            className="bg-purple-800 text-white ml-2"
           >
             Désaffecter les leads du Commercial
           </Button>
