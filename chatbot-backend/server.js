@@ -28,7 +28,7 @@ app.use(cookieParser());
 
 // middleware to connect with frontend
 app.use(cors({
-    origin: ["http://localhost:5173", "https://chatbot-ai-six-psi.vercel.app", "https://chat-bot-dashboard-bice.vercel.app"],
+    origin: ["http://localhost:5173", "https://chatbot-ai-wine.vercel.app"],
     credentials: true,
 }));
 

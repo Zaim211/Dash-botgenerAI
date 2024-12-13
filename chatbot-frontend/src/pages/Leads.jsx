@@ -119,20 +119,49 @@ const Leads = () => {
 
   const columns = [
     {
-      title: "NOM",
-      key: "request_name" || "request_email" || "request_add_email",
-      dataIndex: "request_name" || "request_email" || "request_add_email",
+      title: "Prénom",
+      key: "request_lastname",
+      dataIndex: "request_lastname",
+      render: (text, record) => (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
+          <div>{record.request_lastname || "-"}</div>
+         
+        </div>
+      ),
+    },
+    {
+      title: "Nom",
+      key: "request_name",
+      dataIndex: "request_name",
       render: (text, record) => (
         <div
           className="cursor-pointer"
           onClick={() => handleCoachClick(record)}
         >
           <div>{record.request_name || "-"}</div>
-          <div className="text-gray-500 text-xs">
+         
+        </div>
+      ),
+    },
+ 
+    {
+      title: "Email",
+      key: "request_email" || "request_add_email",
+      dataIndex: "request_email" || "request_add_email",
+      render: (text, record) => (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
+         <div className="text-gray-500 text-xs">
             {record.verification_email === "Non"
               ? record.request_add_email || "-"
               : record.request_email || "-"}
           </div>
+         
         </div>
       ),
     },
@@ -166,17 +195,17 @@ const Leads = () => {
       render: (text) => text || "-",
     },
     {
-      title: "NIVEAU D'ETUDE",
+      title: "Status",
       dataIndex: "course_details",
       key: "course_details",
-      render: (text, record) => text || record.employee_training || "-",
+      render: (text, record) => text || record.request_who || "-",
     },
     {
-      title: "CAMPUS",
+      title: "Besoin",
       dataIndex: "student",
       key: "student",
       render: (text, record) =>
-        text || record.salarie_details || record.découvrir || "-",
+        text || record.information_request || "-",
     },
     {
       title: "STATUS LEAD",
@@ -194,32 +223,19 @@ const Leads = () => {
       ),
     },
     {
-      title: "SPECIALITY",
+      title: "Contacter",
       dataIndex: "choose_course",
       key: "choose_course",
       render: (text, record) => (
         <div className="text-gray-500 text-xs">
-          {record.program_interest ||
-            record.employee_training ||
-            record.choose_course ||
-            record.choose_course_salarie ||
+          {record.initial ||
             "-"}
           ,
         </div>
       ),
     },
-    {
-      title: "Duration",
-      dataIndex: "duration",
-      key: "duration",
-      render: (text, record) => text || record.training_details || "-",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "not_talk" || "remmberme",
-      key: "not_talk" || "remmberme",
-      render: (text, record) => record.remmberme || record.not_talk || "-",
-    },
+ 
+ 
     {
       title: <span style={{ fontSize: "12px" }}>Action</span>,
       key: "action",

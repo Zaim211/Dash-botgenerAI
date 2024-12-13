@@ -93,17 +93,49 @@ const MagicSms = () => {
 
   const columns = [
     {
-      title: "NOM",
-      key: "request_name" || "request_email" || "request_add_email",
-      dataIndex: "request_name" || "request_email" || "request_add_email",
+      title: "Prénom",
+      key: "request_lastname",
+      dataIndex: "request_lastname",
       render: (text, record) => (
-        <div>
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
+          <div>{record.request_lastname || "-"}</div>
+         
+        </div>
+      ),
+    },
+    {
+      title: "Nom",
+      key: "request_name",
+      dataIndex: "request_name",
+      render: (text, record) => (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
           <div>{record.request_name || "-"}</div>
-          <div className="text-gray-500 text-xs">
+         
+        </div>
+      ),
+    },
+ 
+    {
+      title: "Email",
+      key: "request_email" || "request_add_email",
+      dataIndex: "request_email" || "request_add_email",
+      render: (text, record) => (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
+         <div className="text-gray-500 text-xs">
             {record.verification_email === "Non"
               ? record.request_add_email || "-"
               : record.request_email || "-"}
           </div>
+         
         </div>
       ),
     },
@@ -120,7 +152,10 @@ const MagicSms = () => {
           minute: "2-digit",
         });
         return (
-          <div>
+          <div
+            className="cursor-pointer"
+            onClick={() => handleCoachClick(record)}
+          >
             <div>{day}</div>
             <div className="text-gray-500 text-sm">{time}</div>
           </div>
@@ -132,6 +167,12 @@ const MagicSms = () => {
       dataIndex: "request_phone",
       key: "request_phone",
       render: (text) => text || "-",
+    },
+    {
+      title: "Status",
+      dataIndex: "course_details",
+      key: "course_details",
+      render: (text, record) => text || record.request_who || "-",
     },
     {
       title: "SMS",

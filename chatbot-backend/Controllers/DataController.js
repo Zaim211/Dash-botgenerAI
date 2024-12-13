@@ -1,4 +1,4 @@
-const Chat = require("../Models/ChatSchema");
+const Chat = require("../Models/LeadsSchema");
 
 class DataController {
   // Test the connection
@@ -19,7 +19,9 @@ class DataController {
   static async getdata(req, res) {
     try {
       // Retrieve all chat documents from the database
-      const chatData = await Chat.find().populate('commercial').populate('manager');
+      const chatData = await Chat.find()
+        .populate("commercial")
+        .populate("manager");
 
       // Send the chat data back to the client
       res.status(200).json({ chatData });
@@ -45,13 +47,12 @@ class DataController {
   }
   static async updateDataById(req, res) {
     try {
-      const { id } = req.params; 
+      const { id } = req.params;
       if (!id) {
         return res.status(400).json({ message: "ID is required" });
       }
-      const updatedData = req.body; 
+      const updatedData = req.body;
 
-     
       const chat = await Chat.findByIdAndUpdate(id, updatedData, { new: true });
 
       if (!chat) {
@@ -64,48 +65,51 @@ class DataController {
       res.status(500).json({ message: "Error updating chat", error });
     }
   }
- 
+
   static async addComment(req, res) {
     const { id } = req.params; // Lead ID
     const { text, name } = req.body;
     console.log("Adding comment to lead:", id, "Comment:", text, "User:", name);
     if (!name) {
-      return res.status(400).json({ message: "Name is required for the comment" });
+      return res
+        .status(400)
+        .json({ message: "Name is required for the comment" });
     }
-  
-  
+
     try {
       // Trouver le lead par ID
       const lead = await Chat.findById(id);
       if (!lead) {
         return res.status(404).json({ message: "Lead not found" });
       }
-  
+
       // Vérifier ou initialiser les commentaires
       if (!lead.commentaires) {
         lead.commentaires = [];
       }
-  
+
       // Ajouter un nouveau commentaire
       const newComment = {
         text,
-        addedBy: { name }, 
+        addedBy: { name },
         addedAt: new Date(),
       };
       lead.commentaires.push(newComment);
-  
+
       // Sauvegarder le lead avec le nouveau commentaire
       await lead.save();
-  
+
       return res
         .status(200)
-        .json({ message: "Comment added successfully", commentaires: lead.commentaires });
+        .json({
+          message: "Comment added successfully",
+          commentaires: lead.commentaires,
+        });
     } catch (error) {
       console.error("Error adding comment:", error);
       return res.status(500).json({ message: "Internal Server Error" });
     }
   }
-  
 
   static async deleteDataById(req, res) {
     try {
@@ -129,12 +133,14 @@ class DataController {
     try {
       const { query, columnKey } = req.query;
       let filter = {};
-    
+
       // Log to see the request params
       console.log("Received query:", query, "columnKey:", columnKey);
-  
+
       if (!query || !columnKey) {
-        return res.status(400).json({ error: "Query and columnKey are required" });
+        return res
+          .status(400)
+          .json({ error: "Query and columnKey are required" });
       }
       if (columnKey === "createdAt") {
         // Convert the query to a Date object
@@ -162,12 +168,12 @@ class DataController {
         // For other column keys, just search by the columnKey
         filter = { [columnKey]: { $regex: query, $options: "i" } };
       }
-  
+
       // // Construct dynamic filter
       // const filter = { [columnKey]: { $regex: query, $options: "i" } };
-  
+
       const results = await Chat.find(filter);
-  
+
       res.status(200).json(results);
     } catch (error) {
       console.error("Error in search:", error);
@@ -177,70 +183,69 @@ class DataController {
 
   static async updateStatusLead(req, res) {
     const { id } = req.params; // Get the lead's ID from the URL
-  const { statusLead } = req.body; // Get the new statusLead from the request body
+    const { statusLead } = req.body; // Get the new statusLead from the request body
 
-  // Validate the new status value
-  const validStatuses = ['nouveau', 'prospect', 'client']; // Define the valid statuses
-  if (!validStatuses.includes(statusLead)) {
-    return res.status(400).json({ error: 'Invalid status value' });
-  }
-
-  try {
-    // Find the lead by ID and update the 'type' field
-    const updatedLead = await Chat.findByIdAndUpdate(
-      id,
-      { type: statusLead }, // Update the 'type' field
-      { new: true } // Return the updated document
-    );
-
-    // If the lead is not found, return an error
-    if (!updatedLead) {
-      return res.status(404).json({ error: 'Lead not found' });
+    // Validate the new status value
+    const validStatuses = ["nouveau", "prospect", "client"]; // Define the valid statuses
+    if (!validStatuses.includes(statusLead)) {
+      return res.status(400).json({ error: "Invalid status value" });
     }
 
-    // Return the updated lead as a response
-    res.status(200).json(updatedLead);
-  } catch (error) {
-    console.error('Error updating lead:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-}
+    try {
+      // Find the lead by ID and update the 'type' field
+      const updatedLead = await Chat.findByIdAndUpdate(
+        id,
+        { type: statusLead }, // Update the 'type' field
+        { new: true } // Return the updated document
+      );
 
-static deleteComment = async (req, res) => {
-  const { id, commentId } = req.params;
-  console.log('Deleting comment:', commentId, 'from chat:', id);
+      // If the lead is not found, return an error
+      if (!updatedLead) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
 
-  try {
-    // Find the chat document by its ID
-    const chat = await Chat.findById(id);
-    if (!chat) {
-      return res.status(404).json({ message: 'Chat not found' });
+      // Return the updated lead as a response
+      res.status(200).json(updatedLead);
+    } catch (error) {
+      console.error("Error updating lead:", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-
-    // Find the index of the comment by its commentId
-    const commentIndex = chat.commentaires.findIndex(
-      (comment) => comment._id.toString() === commentId
-    );
-
-    console.log('Comment index:', commentIndex);
-
-    if (commentIndex === -1) {
-      return res.status(404).json({ message: 'Comment not found' });
-    }
-
-    // Remove the comment from the `commentaires` array
-    chat.commentaires.splice(commentIndex, 1);
-
-    // Save the updated chat document
-    await chat.save();
-
-    return res.status(200).json({ message: 'Comment deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ message: 'Server error' });
   }
-};
 
+  static deleteComment = async (req, res) => {
+    const { id, commentId } = req.params;
+    console.log("Deleting comment:", commentId, "from chat:", id);
+
+    try {
+      // Find the chat document by its ID
+      const chat = await Chat.findById(id);
+      if (!chat) {
+        return res.status(404).json({ message: "Chat not found" });
+      }
+
+      // Find the index of the comment by its commentId
+      const commentIndex = chat.commentaires.findIndex(
+        (comment) => comment._id.toString() === commentId
+      );
+
+      console.log("Comment index:", commentIndex);
+
+      if (commentIndex === -1) {
+        return res.status(404).json({ message: "Comment not found" });
+      }
+
+      // Remove the comment from the `commentaires` array
+      chat.commentaires.splice(commentIndex, 1);
+
+      // Save the updated chat document
+      await chat.save();
+
+      return res.status(200).json({ message: "Comment deleted successfully" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Server error" });
+    }
+  };
 }
 
 module.exports = DataController;

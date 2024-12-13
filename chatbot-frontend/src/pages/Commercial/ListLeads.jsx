@@ -88,6 +88,24 @@ const ListLeads = () => {
     }
   };
 
+  const handleStatusLeadChange = async (statusLead, record) => {
+    try {
+      const validStatuses = ['nouveau', 'prospect', 'client'];
+      if (statusLead === 'all') {
+        statusLead = 'nouveau'; // Treat 'all' as 'nouveau'
+      }
+      if (!validStatuses.includes(statusLead)) {
+        return res.status(400).json({ error: 'Invalid status value' });
+      }
+      const response = await axios.put(`/updateStatusLead/${record._id}`, {
+        statusLead,  // Ensure you're passing the statusLead in the body
+      });
+      console.log('Updated status:', response.data);
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
+
 
   if (loading && showSpinner) return <Spin tip="Loading..." />;
 
@@ -95,20 +113,49 @@ const ListLeads = () => {
     return <Alert message="Error" description={error} type="error" showIcon />;
   const columns = [
     {
-      title: "NOM",
-      key: "request_name" || "request_email" || "request_add_email",
-      dataIndex: "request_name" || "request_email" || "request_add_email",
+      title: "Prénom",
+      key: "request_lastname",
+      dataIndex: "request_lastname",
+      render: (text, record) => (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
+          <div>{record.request_lastname || "-"}</div>
+         
+        </div>
+      ),
+    },
+    {
+      title: "Nom",
+      key: "request_name",
+      dataIndex: "request_name",
       render: (text, record) => (
         <div
           className="cursor-pointer"
           onClick={() => handleCoachClick(record)}
         >
           <div>{record.request_name || "-"}</div>
-          <div className="text-gray-500 text-xs">
+         
+        </div>
+      ),
+    },
+ 
+    {
+      title: "Email",
+      key: "request_email" || "request_add_email",
+      dataIndex: "request_email" || "request_add_email",
+      render: (text, record) => (
+        <div
+          className="cursor-pointer"
+          onClick={() => handleCoachClick(record)}
+        >
+         <div className="text-gray-500 text-xs">
             {record.verification_email === "Non"
               ? record.request_add_email || "-"
               : record.request_email || "-"}
           </div>
+         
         </div>
       ),
     },
@@ -142,59 +189,44 @@ const ListLeads = () => {
       render: (text) => text || "-",
     },
     {
-      title: "NIVEAU D'ETUDE",
+      title: "Status",
       dataIndex: "course_details",
       key: "course_details",
-      render: (text, record) => text || record.employee_training || "-",
+      render: (text, record) => text || record.request_who || "-",
     },
     {
-      title: "CAMPUS",
+      title: "Besoin",
       dataIndex: "student",
       key: "student",
       render: (text, record) =>
-        text || record.salarie_details || record.découvrir || "-",
+        text || record.information_request || "-",
     },
-    // {
-    //   title: "STATUS LEAD",
-    //   key: "statusLead",
-    //   render: (text, record) => (
-    //     <Select
-    //       defaultValue={record.type}
-    //       style={{ width: 80 }}
-    //       onChange={(value) => handleStatusLeadChange(value, record)}
-    //     >
-    //       <Option value="all">Nouveau</Option>
-    //       <Option value="prospect">Prospect</Option>
-    //       <Option value="client">Client</Option>
-    //     </Select>
-    //   ),
-    // },
     {
-      title: "SPECIALITY",
+      title: "STATUS LEAD",
+      key: "statusLead",
+      render: (text, record) => (
+        <Select
+          defaultValue={record.type}
+          style={{ width: 80 }}
+          onChange={(value) => handleStatusLeadChange(value, record)}
+        >
+          <Option value="all">Nouveau</Option>
+          <Option value="prospect">Prospect</Option>
+          <Option value="client">Client</Option>
+        </Select>
+      ),
+    },
+    {
+      title: "Contacter",
       dataIndex: "choose_course",
       key: "choose_course",
       render: (text, record) => (
         <div className="text-gray-500 text-xs">
-          {record.program_interest ||
-            record.employee_training ||
-            record.choose_course ||
-            record.choose_course_salarie ||
+          {record.initial ||
             "-"}
           ,
         </div>
       ),
-    },
-    {
-      title: "Duration",
-      dataIndex: "duration",
-      key: "duration",
-      render: (text, record) => text || record.training_details || "-",
-    },
-    {
-      title: "STATUS",
-      dataIndex: "not_talk" || "remmberme",
-      key: "not_talk" || "remmberme",
-      render: (text, record) => record.remmberme || record.not_talk || "-",
     },
     {
       title: <span style={{ fontSize: "12px" }}>Commercial</span>,
