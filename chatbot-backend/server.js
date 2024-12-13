@@ -25,10 +25,9 @@ app.use(express.json());
 // middleware to parse cookies
 app.use(cookieParser());
 
-
 // middleware to connect with frontend
 app.use(cors({
-    origin: ["http://localhost:5173", "https://chatbot-ai-wine.vercel.app", "https://dash-botgener-ai.vercel.app/"],
+    origin: ["https://chatbot-ai-wine.vercel.app", "https://dash-botgener-ai.vercel.app/"],
     credentials: true,
 }));
 
