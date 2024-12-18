@@ -9,9 +9,6 @@ import {
   Select,
   message,
   Popconfirm,
-  Upload,
-  Breadcrumb,
-  Avatar,
 } from "antd";
 import {
   EditOutlined,
@@ -41,6 +38,8 @@ const AffectuerLead = () => {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredData, setFilteredData] = useState([]);
 
  
 
@@ -77,6 +76,44 @@ useEffect(() => {
   useEffect(() => {
     fetchCommercials();
   }, []);
+
+  const handleColumnSearch = async (e, columnKey) => {
+    const value = e.target.value.toLowerCase().trim();
+    setSearchQuery(value);
+  
+    try {
+      // If search value is empty, show all data
+      if (value === '') {
+        setFilteredData(chatData);
+        return;
+      }
+  
+      // If searching on 'commercial', handle 'N/A' or empty value cases
+      if (columnKey === "commercial") {
+        const filteredData = chatData.filter((item) => {
+          const commercialValue = item[columnKey]
+            ? `${item[columnKey].prenom} ${item[columnKey].nom}`.toLowerCase()
+            : "n/a"; // Set 'n/a' as default if commercial is empty or null
+  
+          return commercialValue.includes(value);
+        });
+        setFilteredData(filteredData);
+        return;
+      }
+  
+      // Default search (for other fields)
+      const response = await axios.get("/search", {
+        params: {
+          query: value,
+          columnKey: columnKey,
+        },
+      });
+      setFilteredData(response.data);
+    } catch (error) {
+      console.error("Error in search:", error);
+      message.error("Error while searching.");
+    }
+  };
 
  
   const handleAssign = async (values) => {
@@ -178,7 +215,7 @@ useEffect(() => {
       render: (text, record) => (
         <div
           className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}
+          onClick={() => handleLeadClick(record)}
         >
           <div>{record.request_lastname || "-"}</div>
          
@@ -192,7 +229,7 @@ useEffect(() => {
       render: (text, record) => (
         <div
           className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}
+          onClick={() => handleLeadClick(record)}
         >
           <div>{record.request_name || "-"}</div>
          
@@ -207,7 +244,7 @@ useEffect(() => {
       render: (text, record) => (
         <div
           className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}
+          onClick={() => handleLeadClick(record)}
         >
          <div className="text-gray-500 text-xs">
             {record.verification_email === "Non"
@@ -233,7 +270,7 @@ useEffect(() => {
         return (
           <div
             className="cursor-pointer"
-            onClick={() => handleCoachClick(record)}
+            onClick={() => handleLeadClick(record)}
           >
             <div>{day}</div>
             <div className="text-gray-500 text-sm">{time}</div>
@@ -249,51 +286,37 @@ useEffect(() => {
     },
     {
       title: "Status",
-      dataIndex: "course_details",
-      key: "course_details",
+      dataIndex: "request_who",
+      key: "request_who",
       render: (text, record) => text || record.request_who || "-",
     },
     {
       title: "Besoin",
-      dataIndex: "student",
-      key: "student",
+      dataIndex: "information_request",
+      key: "information_request",
       render: (text, record) =>
         text || record.information_request || "-",
     },
     {
-      title: "STATUS LEAD",
-      key: "statusLead",
-      render: (text, record) => (
-        <Select
-          defaultValue={record.type}
-          style={{ width: 80 }}
-          onChange={(value) => handleStatusLeadChange(value, record)}
-        >
-          <Option value="all">Nouveau</Option>
-          <Option value="prospect">Prospect</Option>
-          <Option value="client">Client</Option>
-        </Select>
-      ),
-    },
-    {
       title: "Contacter",
-      dataIndex: "choose_course",
-      key: "choose_course",
+      dataIndex: "initial",
+      key: "initial",
       render: (text, record) => (
         <div className="text-gray-500 text-xs">
           {record.initial ||
-            "-"}
-          ,
+            "-"},
         </div>
       ),
     },
+ 
     {
-      title: <span style={{ fontSize: "12px" }}>Commercial</span>,
+      title: "commercial",
       key: "commercial",
+      dataIndex: "commercial",
       render: (text, record) => (
         <div>
-          {record.commercial
-            ? `${record.commercial.prenom} ${record.commercial.nom}`
+         {record.commercial
+             ? `${record.commercial.prenom} ${record.commercial.nom}`
             : "N/A"}
         </div>
       ),
@@ -320,6 +343,7 @@ useEffect(() => {
       ),
     },
   ];
+
 
   const rowSelection = {
     onChange: (selectedRowKeys) => {
@@ -375,16 +399,24 @@ useEffect(() => {
         <span className="font-thin text-gray-600">résultats par page</span>
       </div>
       <Table
-        dataSource={chatData.slice(
-          (currentPage - 1) * pageSize,
-          currentPage * pageSize
-        )}
+         dataSource={filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
         columns={[
           ...columns.map((col) => ({
             ...col,
             title: (
               <div className="flex flex-col items-center">
                 <div className="text-xs">{col.title}</div>
+                {col.key !== "action" && (
+                  <Input
+                    placeholder={`${col.title}`}
+                    onChange={(e) => handleColumnSearch(e, col.key)}
+                    className="mt-2"
+                    size="medium"
+                    style={{ width: "120%" }}
+                    placeholderStyle={{ fontSize: "2px" }}
+             
+                  />
+                )}
               </div>
             ),
           })),

@@ -1,14 +1,17 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Tabs, Button, Input } from "antd";
+import { Tabs, Button, Input, Form, Calendar, Row, Col, Select, message } from "antd";
 import { jwtDecode } from "jwt-decode";
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined } from "@ant-design/icons";
+import CalendarEvents from "../components/CalendarEvents";
+import Command from "../components/Command";
 
 const { TabPane } = Tabs;
 
 const LeadDetailsPage = () => {
   const { id } = useParams();
+  const [form] = Form.useForm();
   const navigate = useNavigate();
   const [lead, setLead] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,13 +20,75 @@ const LeadDetailsPage = () => {
   const [newComment, setNewComment] = useState("");
   const [comments, setComments] = useState([]);
   const token = localStorage.getItem("token");
-  const decodedToken = token ? jwtDecode(token) : "";
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [commands, setCommands] = useState([]);
 
-  console.log("Decoded Token:", decodedToken);
+
+  const onDateSelect = (date) => {
+    setSelectedDate(date);
+    form.setFieldsValue({
+      event_date: date.format('YYYY-MM-DD'),  // Set selected date in the form field
+    });
+  };
+
+  const handleFormSubmit = async (values) => {
+    try {
+      // Send values to your backend API to add a new lead
+      const response = await axios.post("/data", values);
+      console.log("Lead added successfully:", response.data);
+      // Handle successful submission, e.g., show a success message or reset form
+    } catch (error) {
+      console.error("Error adding lead:", error);
+      // Handle error (e.g., show error message)
+    }
+  };
+
+  const handleFormSubmitCommand = async (values) => {
+    try {
+      const response = await axios.post("/command", values);
+      setCommands([response.data, ...commands]); // Add new command to the state
+      message.success("Commande ajoutée avec succès !");
+    } catch (error) {
+      console.error("Error adding command:", error);
+      message.error("Erreur lors de l'ajout de la commande.");
+    }
+  }
+
+  const handleFormSubmitCalendar = async (values) => {
+    const token = localStorage.getItem("token");
+    const decodedToken = token ? jwtDecode(token) : null;
+    console.log("Decoded Token:", decodedToken);
+    if (!decodedToken) {
+      alert("User not authenticated");
+      return;
+    }
+  
+    // Use userId as adminId (based on the decoded token)
+    const adminId = decodedToken.userId; // Use userId here
+  
+    const eventData = {
+      ...values,   // This includes event_date, event_time, objective, and comment
+      admin: adminId,  // Add the userId as the admin field
+    };
+  
+    try {
+      const response = await axios.post("/events", eventData, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token for backend validation if needed
+        },
+      });
+      console.log("Event added successfully:", response.data);
+      // Handle successful submission
+    } catch (error) {
+      console.error("Error adding event:", error);
+      // Handle error
+    }
+  };
+  
 
   const handleTabChange = (key) => {
     setActiveTab(key);
-    navigate(key === "2" ? `/lead/${id}/commentaires` : `/lead/${id}`);
+    // navigate(key === "2" ? `/lead/${id}/commentaires` : `/lead/${id}`);
   };
 
   useEffect(() => {
@@ -40,6 +105,7 @@ const LeadDetailsPage = () => {
       try {
         const response = await axios.get(`/lead/${id}`);
         setLead(response.data.chat);
+        console.log("Lead Details:", response.data.chat);
         setComments(response.data.chat.commentaires || []);
         setFormData(response.data.chat);
       } catch (error) {
@@ -115,15 +181,18 @@ const LeadDetailsPage = () => {
 
   const handleDeleteComment = async (commentId) => {
     try {
-      const response = await axios.delete(`/lead/${id}/delete-comment/${commentId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.delete(
+        `/lead/${id}/delete-comment/${commentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         alert("Comment deleted successfully!");
-        setComments(comments.filter(comment => comment._id !== commentId)); // Update comments list by removing the deleted comment
+        setComments(comments.filter((comment) => comment._id !== commentId)); // Update comments list by removing the deleted comment
       }
     } catch (error) {
       console.error("Error deleting comment:", error);
@@ -151,16 +220,20 @@ const LeadDetailsPage = () => {
           <Tabs activeKey={activeTab} onChange={handleTabChange}>
             <TabPane tab="Informations" key="1">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Left Column */}
+                {/* Left Column (Informations Leads) */}
                 <div className="space-y-4 mt-4">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Informations Leads
+                  </h2>
                   {[
                     { label: "Nom", value: lead.request_name || "-" },
+                    { label: "Prénom", value: lead.request_lastname || "-" },
                     { label: "Email", value: lead.request_email || "-" },
                     { label: "Téléphone", value: lead.request_phone || "-" },
-                    {
-                      label: "Niveau d'Étude",
-                      value: lead.course_details || "-",
-                    },
+                    { label: "Status", value: lead.request_who || "-" },
+                    { label: "Contacter", value: lead.initial || "-" },
+                    { label: "Besoin", value: lead.information_request || "-" },
+                    { label: "Status de lead", value: lead.type || "-" },
                   ].map(({ label, value }) => (
                     <div className="flex items-center gap-2" key={label}>
                       <p className="text-gray-600 font-semibold">{label}:</p>
@@ -169,23 +242,19 @@ const LeadDetailsPage = () => {
                   ))}
                 </div>
 
-                {/* Right Column */}
+                {/* Right Column (Informations Commercial) */}
                 <div className="space-y-4 mt-4">
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Informations Commercial
+                  </h2>
                   {[
-                    { label: "Campus", value: lead.student || "-" },
                     {
-                      label: "Specialty",
-                      value:
-                        lead.program_interest ||
-                        lead.employee_training ||
-                        lead.choose_course ||
-                        lead.choose_course_salarie ||
-                        "-",
+                      label: "Commercial prénom",
+                      value: lead.commercial?.prenom || "-",
                     },
-                    { label: "Duration", value: lead.duration || "-" },
                     {
-                      label: "Status",
-                      value: lead.remmberme || lead.not_talk || "-",
+                      label: "Commercial nom",
+                      value: lead.commercial?.nom || "-",
                     },
                   ].map(({ label, value }) => (
                     <div className="flex items-center gap-2" key={label}>
@@ -196,50 +265,8 @@ const LeadDetailsPage = () => {
                 </div>
               </div>
             </TabPane>
-            {/* <TabPane tab="Commentaires" key="2">
-         
-              <div className="space-y-4">
-        
-                <div className="flex items-center gap-4">
-                  <Input
-                    placeholder="Add a comment..."
-                    value={newComment}
-                    onChange={(e) => setNewComment(e.target.value)}
-                    className="w-full border rounded-lg"
-                  />
-                  <Button
-                    type="primary"
-                    onClick={handleAddComment}
-                    className="bg-purple-800 text-white"
-                  >
-                    Submit
-                  </Button>
-                </div>
-                <div className="mt-4">
-                  {comments?.length ? (
-                    comments.map((comment, index) => (
-                      <div
-                        key={index}
-                        className="p-4 border rounded-lg mb-2 bg-gray-100"
-                      >
-                        <p className="text-gray-800">{comment.text}</p>
-                        <p className="text-gray-600 text-sm">
-                          Added by: {comment.addedBy?.name || "Unknown"}
-                        </p>
-                        <p className="text-gray-600 text-sm">
-                          {comment.addedAt
-                            ? new Date(comment.addedAt).toLocaleString()
-                            : "Unknown Date"}
-                        </p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-600">No comments yet.</p>
-                  )}
-                </div>
-              </div>
-            </TabPane> */}
-             <TabPane tab="Commentaires" key="2">
+
+            <TabPane tab="Commentaires" key="2">
               <div className="space-y-4">
                 <div className="flex items-center gap-4">
                   <Input
@@ -284,11 +311,245 @@ const LeadDetailsPage = () => {
                       </div>
                     ))
                   ) : (
-                    <p className="text-gray-600">Aucun commentaire pour le moment.</p>
+                    <p className="text-gray-600">
+                      Aucun commentaire pour le moment.
+                    </p>
                   )}
                 </div>
               </div>
             </TabPane>
+            <TabPane tab="Contact" key="3">
+              <div className="space-y-4">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Ajouter un Lead
+                </h2>
+
+                {/* Form */}
+                <Form
+                  form={form}
+                  onFinish={handleFormSubmit}
+                  layout="vertical"
+                  className="space-y-4"
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Left Column */}
+                    <Form.Item
+                      label="Nom"
+                      name="request_name"
+                      rules={[{ required: true, message: "Nom is required" }]}
+                    >
+                      <Input className="w-full p-2 border rounded-lg" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Prénom"
+                      name="request_lastname"
+                      rules={[
+                        { required: true, message: "Prénom is required" },
+                      ]}
+                    >
+                      <Input className="w-full p-2 border rounded-lg" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Email"
+                      name="request_email"
+                      rules={[
+                        { required: true, message: "Email is required" },
+                        {
+                          type: "email",
+                          message: "Please enter a valid email",
+                        },
+                      ]}
+                    >
+                      <Input className="w-full p-2 border rounded-lg" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Téléphone"
+                      name="request_phone"
+                      rules={[
+                        { required: true, message: "Téléphone is required" },
+                      ]}
+                    >
+                      <Input className="w-full p-2 border rounded-lg" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Status"
+                      name="request_who"
+                      rules={[
+                        { required: true, message: "Status is required" },
+                      ]}
+                    >
+                      <Input className="w-full p-2 border rounded-lg" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Contacter"
+                      name="initial"
+                      rules={[
+                        { required: true, message: "Contacter is required" },
+                      ]}
+                    >
+                      <Input className="w-full p-2 border rounded-lg" />
+                    </Form.Item>
+
+                    <Form.Item
+                      label="Besoin"
+                      name="information_request"
+                      rules={[
+                        { required: true, message: "Besoin is required" },
+                      ]}
+                    >
+                      <Input className="w-full p-2 border rounded-lg" />
+                    </Form.Item>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="mt-4">
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      className="px-4 py-2 bg-purple-800 text-white rounded-lg"
+                    >
+                      Ajouter Lead
+                    </Button>
+                  </div>
+                </Form>
+              </div>
+            </TabPane>
+            <TabPane tab="Calendar" key="4">
+              <Row gutter={24}>
+                {/* Left Column for Event Details */}
+                <Col span={12}>
+                  <div className="space-y-4">
+                    <h2 className="text-xl font-semibold text-gray-800">
+                      Ajouter un Événement
+                    </h2>
+
+                    {/* Form */}
+                    <Form
+                      form={form}
+                      onFinish={handleFormSubmitCalendar}
+                      layout="vertical"
+                      className="space-y-4"
+                    >
+                      <Form.Item
+                        label="Date"
+                        name="event_date"
+                        initialValue={
+                          selectedDate
+                            ? selectedDate.format("YYYY-MM-DD")
+                            : null
+                        }
+                      >
+                        <Input
+                          readOnly
+                          value={
+                            selectedDate
+                              ? selectedDate.format("YYYY-MM-DD")
+                              : ""
+                          }
+                        />
+                      </Form.Item>
+
+                      <Form.Item
+                        label="Heure"
+                        name="event_time"
+                        rules={[
+                          { required: true, message: "Heure is required" },
+                        ]}
+                      >
+                        <Input placeholder="HH:mm" />
+                      </Form.Item>
+
+                      <Form.Item
+                        label="Objectif"
+                        name="objective"
+                        rules={[
+                          { required: true, message: "Objectif is required" },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+
+                      <Form.Item label="Commentaire" name="comment">
+                        <Input.TextArea rows={4} />
+                      </Form.Item>
+
+                      {/* Submit Button */}
+                      <Button
+                        type="primary"
+                        htmlType="submit"
+                        className="px-4 py-2 bg-purple-800 text-white rounded-lg"
+                      >
+                        Ajouter Événement
+                      </Button>
+                    </Form>
+                  </div>
+                </Col>
+
+                {/* Right Column for Calendar */}
+                <Col span={12}>
+                  <Calendar onSelect={onDateSelect} fullscreen={true} />
+                </Col>
+              </Row>   <CalendarEvents />
+            </TabPane>
+            <TabPane tab="Commands" key="5">
+  <Row gutter={24}>
+    {/* Left Column for Command Form */}
+    <Col span={12}>
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Ajouter une Commande
+        </h2>
+
+        {/* Command Form */}
+        <Form
+          layout="vertical"
+          onFinish={handleFormSubmitCommand}
+          className="space-y-4"
+        >
+          {/* Type of Command */}
+          <Form.Item
+            label="Type de Commande"
+            name="command_type"
+            rules={[{ required: true, message: "Type de commande est requis" }]}
+          >
+            <Select placeholder="Sélectionnez un type">
+              <Select.Option value="devis">Devis</Select.Option>
+              <Select.Option value="contract">Contrat</Select.Option>
+            </Select>
+          </Form.Item>
+
+          {/* Additional Details */}
+          <Form.Item
+            label="Détails"
+            name="details"
+            rules={[{ required: true, message: "Les détails sont requis" }]}
+          >
+            <Input.TextArea rows={4} placeholder="Ajoutez les détails ici" />
+          </Form.Item>
+
+          {/* Submit Button */}
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+          >
+            Ajouter Commande
+          </Button>
+        </Form>
+      </div>
+    </Col>
+
+    {/* Right Column for Displaying Commands */}
+    <Col span={12}>
+    <Command />
+    </Col>
+  </Row>
+</TabPane>
           </Tabs>
         </div>
       </div>
@@ -362,92 +623,78 @@ const LeadDetailsPage = () => {
                 </div>
                 <div className="flex flex-col gap-2 w-full">
                   <label className="text-lg font-medium text-gray-700">
-                    Niveau d'Étude
+                    Prenom
                   </label>
                   <input
                     type="text"
-                    name="course_details"
+                    name="request_lastname"
                     value={
-                      formData.course_details ||
-                      formData.employee_training ||
-                      "-"
+                      formData.request_lastname ||
+                   
+                      ""
                     }
                     onChange={handleInputChange}
                     className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="Enter Education Level"
+                    placeholder="Enter Lead prenom"
                   />
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex flex-col gap-2 w-full">
-                  <label className="text-lg font-medium text-gray-700">
-                    Campus
-                  </label>
-                  <input
-                    type="text"
-                    name="student"
-                    value={
-                      formData.student ||
-                      formData.salarie_details ||
-                      formData.découvrir ||
-                      "-"
-                    }
-                    onChange={handleInputChange}
-                    className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="Enter Campus Name"
-                  />
-                </div>
-                <div className="flex flex-col gap-2 w-full">
-                  <label className="text-lg font-medium text-gray-700">
-                    Speciality
-                  </label>
-                  <input
-                    type="text"
-                    name="program_interest"
-                    value={
-                      formData.program_interest ||
-                      formData.employee_training ||
-                      formData.choose_course ||
-                      formData.choose_course_salarie ||
-                      "-"
-                    }
-                    onChange={handleInputChange}
-                    className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="Enter Lead's Speciality"
-                  />
-                </div>
-              </div>
+            
 
               <div className="flex gap-4">
                 <div className="flex flex-col gap-2 w-full">
                   <label className="text-lg font-medium text-gray-700">
-                    Duration
+                  Contacter
                   </label>
                   <input
                     type="text"
-                    name="duration"
+                    name="initial"
                     value={
-                      formData.duration || formData.training_details || "-"
+                      formData.initial || "-"
                     }
                     onChange={handleInputChange}
                     className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="Enter Duration"
+                    placeholder="Enter raison de contact"
                   />
                 </div>
+                <div className="flex flex-col gap-2 w-full">
+                  <label className="text-lg font-medium text-gray-700">
+                  Besoin
+                  </label>
+                  <input
+                    type="text"
+                    name="information_request"
+                    value={
+                      formData.information_request ||
+                      ""
+                    }
+                    onChange={handleInputChange}
+                    className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
+                    placeholder="Enter Lead's besoin"
+                  />
+                </div>
+                
+              </div>
+              <div className="flex gap-4">
                 <div className="flex flex-col gap-2 w-full">
                   <label className="text-lg font-medium text-gray-700">
                     Status
                   </label>
                   <input
                     type="text"
-                    name="remmberme"
-                    value={formData.remmberme || formData.not_talk || "-"}
+                    name="request_who"
+                    value={
+                      formData.request_who ||
+                    
+                      ""
+                    }
                     onChange={handleInputChange}
                     className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
-                    placeholder="Enter Status"
+                    placeholder="Enter Campus Name"
                   />
                 </div>
+           
               </div>
 
               {/* Action Buttons */}

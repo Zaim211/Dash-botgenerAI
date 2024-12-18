@@ -31,12 +31,14 @@ const Leads = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
+  const [activeFilter, setActiveFilter] = useState("all");
+  
 
 
   const handlePageChange = (value) => {
     setCurrentPage(value);
   };
-  const handleCoachClick = (chatData) => {
+  const handleLeadClick = (chatData) => {
     navigate(`/lead/${chatData._id}`);
   };
 
@@ -92,30 +94,66 @@ const Leads = () => {
     }
   };
 
-  const handleColumnSearch = async (e, columnKey) => {
-    const value = e.target.value.toLowerCase();
-    setSearchQuery(value);
+  // const handleColumnSearch = async (e, columnKey) => {
+  //   const value = e.target.value.toLowerCase();
+  //   setSearchQuery(value);
 
-    try {
-      if (value.trim() === '') {
-        // If empty, use the full chatData without making an API request
-        setFilteredData(chatData);
-        return;
-      }
-      console.log("Query:", value, "Column Key:", columnKey); 
-      const response = await axios.get("/search", {
-        params: {
-          query: value,
-          columnKey: columnKey,
-        },
-      });
-      setFilteredData(response.data);
-    } catch (error) {
-      console.error("Error in search:", error);
-      message.error("Error while searching.");
+  //   try {
+  //     if (value.trim() === '') {
+  //       setFilteredData(chatData);
+  //       return;
+  //     }
+  //     const response = await axios.get("/search", {
+  //       params: {
+  //         query: value,
+  //         columnKey: columnKey,
+  //       },
+  //     });
+  //     setFilteredData(response.data);
+  //   } catch (error) {
+  //     console.error("Error in search:", error);
+  //     message.error("Error while searching.");
+  //   }
+  // };
+
+ const handleColumnSearch = async (e, columnKey) => {
+  const value = e.target.value.toLowerCase().trim();
+  setSearchQuery(value);
+
+  try {
+    // If search value is empty, show all data
+    if (value === '') {
+      setFilteredData(chatData);
+      return;
     }
-  };
-  const dataToDisplay = searchQuery ? filteredData : chatData;
+
+    // If searching on 'commercial', handle 'N/A' or empty value cases
+    if (columnKey === "commercial") {
+      const filteredData = chatData.filter((item) => {
+        const commercialValue = item[columnKey]
+          ? `${item[columnKey].prenom} ${item[columnKey].nom}`.toLowerCase()
+          : "n/a"; // Set 'n/a' as default if commercial is empty or null
+
+        return commercialValue.includes(value);
+      });
+      setFilteredData(filteredData);
+      return;
+    }
+
+    // Default search (for other fields)
+    const response = await axios.get("/search", {
+      params: {
+        query: value,
+        columnKey: columnKey,
+      },
+    });
+    setFilteredData(response.data);
+  } catch (error) {
+    console.error("Error in search:", error);
+    message.error("Error while searching.");
+  }
+};
+
 
   const columns = [
     {
@@ -125,7 +163,7 @@ const Leads = () => {
       render: (text, record) => (
         <div
           className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}
+          onClick={() => handleLeadClick(record)}
         >
           <div>{record.request_lastname || "-"}</div>
          
@@ -139,7 +177,7 @@ const Leads = () => {
       render: (text, record) => (
         <div
           className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}
+          onClick={() => handleLeadClick(record)}
         >
           <div>{record.request_name || "-"}</div>
          
@@ -154,7 +192,7 @@ const Leads = () => {
       render: (text, record) => (
         <div
           className="cursor-pointer"
-          onClick={() => handleCoachClick(record)}
+          onClick={() => handleLeadClick(record)}
         >
          <div className="text-gray-500 text-xs">
             {record.verification_email === "Non"
@@ -180,7 +218,7 @@ const Leads = () => {
         return (
           <div
             className="cursor-pointer"
-            onClick={() => handleCoachClick(record)}
+            onClick={() => handleLeadClick(record)}
           >
             <div>{day}</div>
             <div className="text-gray-500 text-sm">{time}</div>
@@ -196,14 +234,14 @@ const Leads = () => {
     },
     {
       title: "Status",
-      dataIndex: "course_details",
-      key: "course_details",
+      dataIndex: "request_who",
+      key: "request_who",
       render: (text, record) => text || record.request_who || "-",
     },
     {
       title: "Besoin",
-      dataIndex: "student",
-      key: "student",
+      dataIndex: "information_request",
+      key: "information_request",
       render: (text, record) =>
         text || record.information_request || "-",
     },
@@ -224,18 +262,28 @@ const Leads = () => {
     },
     {
       title: "Contacter",
-      dataIndex: "choose_course",
-      key: "choose_course",
+      dataIndex: "initial",
+      key: "initial",
       render: (text, record) => (
         <div className="text-gray-500 text-xs">
           {record.initial ||
-            "-"}
-          ,
+            "-"},
         </div>
       ),
     },
  
- 
+    {
+      title: "commercial",
+      key: "commercial",
+      dataIndex: "commercial",
+      render: (text, record) => (
+        <div>
+         {record.commercial
+             ? `${record.commercial.prenom} ${record.commercial.nom}`
+            : "N/A"}
+        </div>
+      ),
+    },
     {
       title: <span style={{ fontSize: "12px" }}>Action</span>,
       key: "action",
@@ -287,9 +335,33 @@ const Leads = () => {
     },
     selectedRowKeys: selectedLeads,
   };
+  const handleFilter = (type) => {
+    setActiveFilter(type); // Update the active filter state
+    if (type === "all") {
+      setFilteredData(chatData); // Show all data
+    } else {
+      const filtered = chatData.filter((item) => item.type === type);
+      setFilteredData(filtered); // Show filtered data
+    }
+  };
 
   return (
     <div className=" bg-gray-50 h-full mb-6 rounded-md">
+         <div className="flex justify-between items-center p-4 bg-white rounded-t-md shadow-sm">
+      <h2 className="text-lg font-semibold text-gray-700">Leads Filter</h2>
+      <div className="space-x-2">
+      <Button type={activeFilter === "nouveau" ? "primary" : "default"} 
+      onClick={() => handleFilter("nouveau")}>
+            Tous
+          </Button>
+          <Button type={activeFilter === "prospect" ? "primary" : "default"} onClick={() => handleFilter("prospect")}>
+            Prospect
+          </Button>
+          <Button type={activeFilter === "client" ? "primary" : "default"} onClick={() => handleFilter("client")}>
+            Client
+          </Button>
+      </div>
+    </div>
       <div className="mb-4 p-4 flex items-center rounded-md gap-4">
         <span className="font-thin text-gray-600">Afficher</span>
         <Select
@@ -309,10 +381,10 @@ const Leads = () => {
 
       <div className="bg-white rounded-lg shadow-md p-4">
         <Table
-          dataSource={dataToDisplay.slice(
-            (currentPage - 1) * pageSize,
-            currentPage * pageSize
-          )}
+          // dataSource={dataToDisplay.slice(
+          //   (currentPage - 1) * pageSize,
+          //   currentPage * pageSize
+          // )}
           columns={[
             ...columns.map((col) => ({
               ...col,
@@ -334,8 +406,16 @@ const Leads = () => {
               ),
             })),
           ]}
+          dataSource={filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
+         
+          pagination={{
+            current: currentPage,
+            pageSize,
+            total: filteredData.length,
+            onChange: (page) => setCurrentPage(page),
+          }}
           rowKey={(record) => record._id}
-          pagination={false}
+          // pagination={false}
           bordered
           className="custom-table"
           rowSelection={rowSelection}

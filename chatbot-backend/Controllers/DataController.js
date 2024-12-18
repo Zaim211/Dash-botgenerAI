@@ -1,7 +1,7 @@
 const Chat = require("../Models/LeadsSchema");
 
 class DataController {
-  // Test the connection
+  
   static async data(req, res) {
     try {
       const data = new Chat(req.body);
@@ -33,7 +33,7 @@ class DataController {
   static async getdataById(req, res) {
     try {
       const { id } = req.params;
-      const chat = await Chat.findById(id);
+      const chat = await Chat.findById(id).populate("commercial");
 
       if (!chat) {
         return res.status(404).json({ message: "Chat not found" });
@@ -129,58 +129,176 @@ class DataController {
     }
   }
 
-  static async searchData(req, res) {
-    try {
-      const { query, columnKey } = req.query;
-      let filter = {};
+  // static async searchData(req, res) {
+  //   try {
+  //     const { query, columnKey } = req.query;
+  //     let filter = {};
 
-      // Log to see the request params
-      console.log("Received query:", query, "columnKey:", columnKey);
+  //     // Log to see the request params
+  //     console.log("Received query:", query, "columnKey:", columnKey);
 
-      if (!query || !columnKey) {
-        return res
-          .status(400)
-          .json({ error: "Query and columnKey are required" });
-      }
-      if (columnKey === "createdAt") {
-        // Convert the query to a Date object
-        const dateQuery = new Date(query);
-        if (!isNaN(dateQuery.getTime())) {
-          // Search for documents created on that date (ignoring time)
-          filter = {
-            [columnKey]: {
-              $gte: new Date(dateQuery.setHours(0, 0, 0, 0)), // Start of the day
-              $lt: new Date(dateQuery.setHours(23, 59, 59, 999)), // End of the day
-            },
-          };
-        } else {
-          return res.status(400).json({ message: "Invalid date format." });
-        }
-      } else if (columnKey === "request_name") {
+  //     if (!query || !columnKey) {
+  //       return res
+  //         .status(400)
+  //         .json({ error: "Query and columnKey are required" });
+  //     }
+  //     if (columnKey === "createdAt") {
+  //       // Convert the query to a Date object
+  //       const dateQuery = new Date(query);
+  //       if (!isNaN(dateQuery.getTime())) {
+  //         // Search for documents created on that date (ignoring time)
+  //         filter = {
+  //           [columnKey]: {
+  //             $gte: new Date(dateQuery.setHours(0, 0, 0, 0)), // Start of the day
+  //             $lt: new Date(dateQuery.setHours(23, 59, 59, 999)), // End of the day
+  //           },
+  //         };
+  //       } else {
+  //         return res.status(400).json({ message: "Invalid date format." });
+  //       }
+  //     } else if (columnKey === "request_name") {
+  //       filter = {
+  //         $or: [
+  //           { request_name: { $regex: query, $options: "i" } },
+  //           { request_email: { $regex: query, $options: "i" } },
+  //           { request_add_email: { $regex: query, $options: "i" } },
+  //         ],
+  //       };
+  //     } else {
+  //       // For other column keys, just search by the columnKey
+  //       filter = { [columnKey]: { $regex: query, $options: "i" } };
+  //     }
+  //     // // Construct dynamic filter
+
+
+  //     const results = await Chat.find(filter);
+
+  //     res.status(200).json(results);
+  //   } catch (error) {
+  //     console.error("Error in search:", error);
+  //     res.status(500).json({ error: "Internal Server Error" });
+  //   }
+  // }
+  // static async searchData(req, res) {
+  //   try {
+  //     const { query, columnKey } = req.query;
+  
+  //     console.log("Received query:", query, "columnKey:", columnKey);
+  
+  //     if (!query || !columnKey) {
+  //       return res
+  //         .status(400)
+  //         .json({ error: "Query and columnKey are required" });
+  //     }
+  
+  //     let filter = {};
+  //     const fieldType = Chat.schema.paths[columnKey]?.instance;
+  
+  //     if (columnKey === "createdAt") {
+  //       const dateQuery = new Date(query);
+  //       if (!isNaN(dateQuery.getTime())) {
+  //         filter = {
+  //           [columnKey]: {
+  //             $gte: new Date(dateQuery.setHours(0, 0, 0, 0)),
+  //             $lt: new Date(dateQuery.setHours(23, 59, 59, 999)),
+  //           },
+  //         };
+  //       } else {
+  //         return res.status(400).json({ message: "Invalid date format." });
+  //       }
+  //     } else if (fieldType === "String") {
+  //       if (columnKey === "request_name") {
+  //         filter = {
+  //           $or: [
+  //             { request_name: { $regex: query, $options: "i" } },
+  //             { request_email: { $regex: query, $options: "i" } },
+  //             { request_add_email: { $regex: query, $options: "i" } },
+  //           ],
+  //         };
+  //       } else {
+  //         filter = { [columnKey]: { $regex: query, $options: "i" } };
+  //       }
+  //     } else {
+  //       return res
+  //         .status(400)
+  //         .json({ message: `${columnKey} is not a valid searchable field.` });
+  //     }
+  
+  //     console.log("Constructed filter:", filter);
+  
+  //     const results = await Chat.find(filter);
+  //     res.status(200).json(results);
+  //   } catch (error) {
+  //     console.error("Error in search:", error);
+  //     res.status(500).json({ error: "Internal Server Error" });
+  //   }
+  // }
+
+
+static async searchData(req, res) {
+  try {
+    const { query, columnKey } = req.query;
+
+    if (!query || !columnKey) {
+      return res.status(400).json({ error: "Query and columnKey are required" });
+    }
+
+    let filter = {};
+
+    if (columnKey === "commercial") {
+      // Populate the `commercial` field and search by its `nom` or `email`
+      const results = await Chat.find()
+        .populate({
+          path: "commercial",
+          match: {
+            $or: [
+              { prenom: { $regex: query, $options: "i" } },
+              { nom: { $regex: query, $options: "i" } }
+            ],
+          },
+        })
+        .then((chats) => chats.filter((chat) => chat.commercial !== null)); // Filter out unmatched results
+
+      return res.status(200).json(results);
+    }
+
+    const schemaPaths = Chat.schema.paths;
+
+    if (!schemaPaths[columnKey]) {
+      return res.status(400).json({ error: `Invalid columnKey: ${columnKey}` });
+    }
+
+    const fieldType = schemaPaths[columnKey].instance;
+
+    if (fieldType === "String") {
+      filter = { [columnKey]: { $regex: query, $options: "i" } };
+    } else if (columnKey === "createdAt") {
+      const dateQuery = new Date(query);
+      if (!isNaN(dateQuery.getTime())) {
         filter = {
-          $or: [
-            { request_name: { $regex: query, $options: "i" } },
-            { request_email: { $regex: query, $options: "i" } },
-            { request_add_email: { $regex: query, $options: "i" } },
-          ],
+          [columnKey]: {
+            $gte: new Date(dateQuery.setHours(0, 0, 0, 0)),
+            $lt: new Date(dateQuery.setHours(23, 59, 59, 999)),
+          },
         };
       } else {
-        // For other column keys, just search by the columnKey
-        filter = { [columnKey]: { $regex: query, $options: "i" } };
+        return res.status(400).json({ message: "Invalid date format." });
       }
-
-      // // Construct dynamic filter
-      // const filter = { [columnKey]: { $regex: query, $options: "i" } };
-
-      const results = await Chat.find(filter);
-
-      res.status(200).json(results);
-    } catch (error) {
-      console.error("Error in search:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+    } else {
+      return res.status(400).json({
+        error: `Cannot apply regex to field ${columnKey} of type ${fieldType}`,
+      });
     }
-  }
 
+    const results = await Chat.find(filter);
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Error in search:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}
+
+  
   static async updateStatusLead(req, res) {
     const { id } = req.params; // Get the lead's ID from the URL
     const { statusLead } = req.body; // Get the new statusLead from the request body
