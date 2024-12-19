@@ -11,8 +11,8 @@ import {
   faThLarge,
   faBullhorn,
   faSignOutAlt,
-  faUsers,
   faFileContract,
+  faChartBar,
   faCog,
 } from "@fortawesome/free-solid-svg-icons";
 import { UserOutlined } from "@ant-design/icons";
@@ -124,7 +124,7 @@ const SideBar = () => {
       key: "/campagnes",
       icon: (
         <FontAwesomeIcon
-          icon={faBullhorn}
+          icon={faChartBar}
           style={{ fontSize: "23px", marginRight: "10px" }}
         />
       ),
@@ -138,6 +138,17 @@ const SideBar = () => {
           icon: (
             <FontAwesomeIcon
               icon={faPlusCircle}
+              style={{ fontSize: "23px", marginRight: "10px" }}
+            />
+          ),
+        },
+        {
+          key: "/publicités",
+          label: "Publicités",
+
+          icon: (
+            <FontAwesomeIcon
+              icon={faBullhorn}
               style={{ fontSize: "23px", marginRight: "10px" }}
             />
           ),

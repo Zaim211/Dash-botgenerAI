@@ -60,6 +60,13 @@ router.delete("/banner/:id", AdsController.deleteBanner);
 router.put('/banner/:id', AdsController.updateBanner);
 router.get('/banner/:id', AdsController.getBannerById);
 
+// publicité routes
+router.post('/pub', AdsController.createPub);
+router.get('/pub', AdsController.getPubs);
+router.delete("/pub/:id", AdsController.deletePub);
+router.put('/pub/:id', AdsController.updatePub);
+router.get('/pub/:id', AdsController.getPubById);
+
 
 router.patch("/banner/:id/toggle-ad-status", BannerController.toggleAdStatus);
 

@@ -71,7 +71,7 @@ const Banner = () => {
           icon={<PlusOutlined />}
           onClick={handleCreateNewBanner}
         >
-          Create New Banner
+          Create nouveau Banner
         </Button>
       </div>
 

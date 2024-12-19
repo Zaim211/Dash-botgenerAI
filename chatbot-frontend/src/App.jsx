@@ -20,6 +20,8 @@ import CommerciauxPage from "./pages/CommerciauxPage";
 import ListLeads from "./pages/Commercial/ListLeads";
 import Commands from "./pages/Commercial/Commands";
 import CreatePrograms from "./pages/CreatePrograms";
+import Publicités from "./pages/Publicités";
+import CreatePub from "./pages/CreatePub";
 
 
 axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
@@ -50,6 +52,9 @@ function App() {
             <Route path="/settings" element={<CommerciauxPage />} />
             <Route path="/list-leads" element={<ListLeads />} />
             <Route path="/magic-sms" element={<MagicSms />} />
+            <Route path="/publicités" element={<Publicités />} />
+            <Route path="/create-publicité" element={<CreatePub />} />
+            <Route path="/create-publicité/:id" element={<CreatePub />} />
             <Route path="/settings" element={<Setting />} />
             <Route path="/command" element={<Commands />} />
             <Route path="/lead/:id" element={<LeadDetailsPage />}>
