@@ -19,7 +19,6 @@ useEffect(() => {
       console.log("ads:", response.data);
       setPubs(response.data);
     } catch (error) {
-      message.error("Failed to fetch pubs.");
       console.error(error);
     } finally {
       setLoading(false); // Set loading to false once data is fetched

@@ -137,7 +137,7 @@ class AdsController {
 
   static async createPub(req, res) {
     try {
-      const { title, userId, mainText, imageUrl } = req.body;
+      const { title, userId, mainText, imageUrl, link } = req.body;
 
       // Build the Banner object dynamically based on the platform
       const pubData = {
@@ -145,6 +145,7 @@ class AdsController {
         mainText,
         imageUrl,
         admin: userId,
+        link,
       };
 
       // Create and save the new banner

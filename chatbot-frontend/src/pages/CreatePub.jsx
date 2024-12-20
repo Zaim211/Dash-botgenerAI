@@ -11,6 +11,7 @@ const CreatePub = () => {
     title: "",
     mainText: "",
     imageUrl: "",
+    link: "",
   });
   const [uploadedFileName, setUploadedFileName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -39,7 +40,7 @@ const CreatePub = () => {
       console.log("Responsedata:", res.data);
     } else {
       form.resetFields();
-      setFormData({ title: "", mainText: "", imageUrl: "" });
+      setFormData({ title: "", mainText: "", imageUrl: "", link: "" });
     }
   }, [id, form]);
 
@@ -179,6 +180,17 @@ const CreatePub = () => {
             name="title"
           />
         </Form.Item>
+        <Form.Item
+          label="Url"
+          name="link"
+          rules={[{ required: true, message: "Please input the url!" }]}
+        >
+          <Input
+            value={formData.link}
+            onChange={handleInputChange}
+            name="link"
+          />
+        </Form.Item>
 
         <Form.Item
           label="Texte principal"
@@ -192,6 +204,8 @@ const CreatePub = () => {
             rows={4}
           />
         </Form.Item>
+        
+       
         <Form.Item>
           <Button
             type="primary"

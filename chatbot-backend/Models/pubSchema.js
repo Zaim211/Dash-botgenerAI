@@ -8,7 +8,8 @@ const pubSchema = new mongoose.Schema({
   },
   title: { type: String, required: true },
   mainText: { type: String, required: true },  
-  imageUrl: { type: String },
+  imageUrl: { type: String, required: true},
+  link: { type: String, required: true },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Publicity", pubSchema);
