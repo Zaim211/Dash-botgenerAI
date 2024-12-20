@@ -12,11 +12,7 @@ import {
   Input,
 } from "antd";
 import { useNavigate } from "react-router-dom";
-import {
-
-  DeleteOutlined,
-
-} from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -32,8 +28,6 @@ const Leads = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredData, setFilteredData] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
-  
-
 
   const handlePageChange = (value) => {
     setCurrentPage(value);
@@ -42,14 +36,12 @@ const Leads = () => {
     navigate(`/lead/${chatData._id}`);
   };
 
- 
-
   const totalPages = Math.ceil(chatData.length / pageSize);
 
   useEffect(() => {
     const getUserData = async () => {
       try {
-        const response = await axios.get("/data"); // Adjust to match your backend URL
+        const response = await axios.get("/data");
         console.log("Fetched data:", response.data);
         setChatData(response.data.chatData);
         setFilteredData(response.data.chatData);
@@ -63,22 +55,21 @@ const Leads = () => {
     getUserData();
   }, []);
 
-
   const handleStatusLeadChange = async (statusLead, record) => {
     try {
-      const validStatuses = ['nouveau', 'prospect', 'client'];
-      if (statusLead === 'all') {
-        statusLead = 'nouveau'; // Treat 'all' as 'nouveau'
+      const validStatuses = ["nouveau", "prospect", "client"];
+      if (statusLead === "all") {
+        statusLead = "nouveau"; // Treat 'all' as 'nouveau'
       }
       if (!validStatuses.includes(statusLead)) {
-        return res.status(400).json({ error: 'Invalid status value' });
+        return res.status(400).json({ error: "Invalid status value" });
       }
       const response = await axios.put(`/updateStatusLead/${record._id}`, {
-        statusLead,  // Ensure you're passing the statusLead in the body
+        statusLead, // Ensure you're passing the statusLead in the body
       });
-      console.log('Updated status:', response.data);
+      console.log("Updated status:", response.data);
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     }
   };
   const handleDelete = async (id) => {
@@ -116,44 +107,43 @@ const Leads = () => {
   //   }
   // };
 
- const handleColumnSearch = async (e, columnKey) => {
-  const value = e.target.value.toLowerCase().trim();
-  setSearchQuery(value);
+  const handleColumnSearch = async (e, columnKey) => {
+    const value = e.target.value.toLowerCase().trim();
+    setSearchQuery(value);
 
-  try {
-    // If search value is empty, show all data
-    if (value === '') {
-      setFilteredData(chatData);
-      return;
-    }
+    try {
+      // If search value is empty, show all data
+      if (value === "") {
+        setFilteredData(chatData);
+        return;
+      }
 
-    // If searching on 'commercial', handle 'N/A' or empty value cases
-    if (columnKey === "commercial") {
-      const filteredData = chatData.filter((item) => {
-        const commercialValue = item[columnKey]
-          ? `${item[columnKey].prenom} ${item[columnKey].nom}`.toLowerCase()
-          : "n/a"; // Set 'n/a' as default if commercial is empty or null
+      // If searching on 'commercial', handle 'N/A' or empty value cases
+      if (columnKey === "commercial") {
+        const filteredData = chatData.filter((item) => {
+          const commercialValue = item[columnKey]
+            ? `${item[columnKey].prenom} ${item[columnKey].nom}`.toLowerCase()
+            : "n/a"; // Set 'n/a' as default if commercial is empty or null
 
-        return commercialValue.includes(value);
+          return commercialValue.includes(value);
+        });
+        setFilteredData(filteredData);
+        return;
+      }
+
+      // Default search (for other fields)
+      const response = await axios.get("/search", {
+        params: {
+          query: value,
+          columnKey: columnKey,
+        },
       });
-      setFilteredData(filteredData);
-      return;
+      setFilteredData(response.data);
+    } catch (error) {
+      console.error("Error in search:", error);
+      message.error("Error while searching.");
     }
-
-    // Default search (for other fields)
-    const response = await axios.get("/search", {
-      params: {
-        query: value,
-        columnKey: columnKey,
-      },
-    });
-    setFilteredData(response.data);
-  } catch (error) {
-    console.error("Error in search:", error);
-    message.error("Error while searching.");
-  }
-};
-
+  };
 
   const columns = [
     {
@@ -161,12 +151,8 @@ const Leads = () => {
       key: "request_lastname",
       dataIndex: "request_lastname",
       render: (text, record) => (
-        <div
-          className="cursor-pointer"
-          onClick={() => handleLeadClick(record)}
-        >
+        <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
           <div>{record.request_lastname || "-"}</div>
-         
         </div>
       ),
     },
@@ -175,31 +161,23 @@ const Leads = () => {
       key: "request_name",
       dataIndex: "request_name",
       render: (text, record) => (
-        <div
-          className="cursor-pointer"
-          onClick={() => handleLeadClick(record)}
-        >
+        <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
           <div>{record.request_name || "-"}</div>
-         
         </div>
       ),
     },
- 
+
     {
       title: "Email",
       key: "request_email" || "request_add_email",
       dataIndex: "request_email" || "request_add_email",
       render: (text, record) => (
-        <div
-          className="cursor-pointer"
-          onClick={() => handleLeadClick(record)}
-        >
-         <div className="text-gray-500 text-xs">
+        <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
+          <div className="text-gray-500 text-xs">
             {record.verification_email === "Non"
               ? record.request_add_email || "-"
               : record.request_email || "-"}
           </div>
-         
         </div>
       ),
     },
@@ -242,8 +220,7 @@ const Leads = () => {
       title: "Besoin",
       dataIndex: "information_request",
       key: "information_request",
-      render: (text, record) =>
-        text || record.information_request || "-",
+      render: (text, record) => text || record.information_request || "-",
     },
     {
       title: "STATUS LEAD",
@@ -265,21 +242,18 @@ const Leads = () => {
       dataIndex: "initial",
       key: "initial",
       render: (text, record) => (
-        <div className="text-gray-500 text-xs">
-          {record.initial ||
-            "-"},
-        </div>
+        <div className="text-gray-500 text-xs">{record.initial || "-"},</div>
       ),
     },
- 
+
     {
       title: "commercial",
       key: "commercial",
       dataIndex: "commercial",
       render: (text, record) => (
         <div>
-         {record.commercial
-             ? `${record.commercial.prenom} ${record.commercial.nom}`
+          {record.commercial
+            ? `${record.commercial.prenom} ${record.commercial.nom}`
             : "N/A"}
         </div>
       ),
@@ -306,7 +280,6 @@ const Leads = () => {
       ),
     },
   ];
-
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -337,31 +310,41 @@ const Leads = () => {
   };
   const handleFilter = (type) => {
     setActiveFilter(type); // Update the active filter state
-    if (type === "all") {
-      setFilteredData(chatData); // Show all data
-    } else {
+    if (type === "client" || type === "prospect") {
       const filtered = chatData.filter((item) => item.type === type);
+      console.log("Filtered data22:", filtered);
       setFilteredData(filtered); // Show filtered data
+      
+    } else {
+      setFilteredData(chatData);
     }
   };
 
   return (
     <div className=" bg-gray-50 h-full mb-6 rounded-md">
-         <div className="flex justify-between items-center p-4 bg-white rounded-t-md shadow-sm">
-      <h2 className="text-lg font-semibold text-gray-700">Leads Filter</h2>
-      <div className="space-x-2">
-      <Button type={activeFilter === "nouveau" ? "primary" : "default"} 
-      onClick={() => handleFilter("nouveau")}>
+      <div className="flex justify-between items-center p-4 bg-white rounded-t-md shadow-sm">
+        <h2 className="text-lg font-semibold text-gray-700">Leads Filter</h2>
+        <div className="space-x-2">
+          <Button
+            type={activeFilter === "nouveau" ? "primary" : "default"}
+            onClick={() => handleFilter("nouveau")}
+          >
             Tous
           </Button>
-          <Button type={activeFilter === "prospect" ? "primary" : "default"} onClick={() => handleFilter("prospect")}>
+          <Button
+            type={activeFilter === "prospect" ? "primary" : "default"}
+            onClick={() => handleFilter("prospect")}
+          >
             Prospect
           </Button>
-          <Button type={activeFilter === "client" ? "primary" : "default"} onClick={() => handleFilter("client")}>
+          <Button
+            type={activeFilter === "client" ? "primary" : "default"}
+            onClick={() => handleFilter("client")}
+          >
             Client
           </Button>
+        </div>
       </div>
-    </div>
       <div className="mb-4 p-4 flex items-center rounded-md gap-4">
         <span className="font-thin text-gray-600">Afficher</span>
         <Select
@@ -399,15 +382,16 @@ const Leads = () => {
                       size="medium"
                       style={{ width: "120%" }}
                       placeholderStyle={{ fontSize: "2px" }}
-               
                     />
                   )}
                 </div>
               ),
             })),
           ]}
-          dataSource={filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
-         
+          dataSource={filteredData.slice(
+            (currentPage - 1) * pageSize,
+            currentPage * pageSize
+          )}
           pagination={{
             current: currentPage,
             pageSize,

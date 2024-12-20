@@ -399,7 +399,7 @@ useEffect(() => {
         <span className="font-thin text-gray-600">résultats par page</span>
       </div>
       <Table
-         dataSource={filteredData.slice((currentPage - 1) * pageSize, currentPage * pageSize)}
+         dataSource={filteredData.length ? filteredData : chatData}
         columns={[
           ...columns.map((col) => ({
             ...col,
