@@ -21,7 +21,6 @@ class ProgramController {
   static async getAllPrograms(req, res) {
     try {
         const programs = await Program.find(); 
-        console.log(programs);
         res.status(200).json(programs);
       } catch (error) {
         console.error('Error fetching programs:', error);
@@ -74,6 +73,9 @@ class ProgramController {
   static async createEvent(req, res) {
     try {
       const adminId = req.body.admin; 
+      const leadId = req.body.leadId;
+      console.log("Admin ID:", adminId);
+      console.log("Lead ID:", leadId);
       const { event_date, event_time, objective, comment } = req.body;
   
       const newEvent = new Event({
@@ -81,7 +83,8 @@ class ProgramController {
         event_date,
         event_time,
         objective,
-        comment
+        comment,
+        lead: leadId
       });
   
       await newEvent.save();
@@ -92,8 +95,10 @@ class ProgramController {
     }
   }
   static async getAllEvents(req, res) {
+    const { id } = req.params; // Get leadId from query parameter
+    console.log("Lead ID:", id);
     try {
-      const events = await Event.findOne().sort({ createdAt: -1 });
+      const events = await Event.findOne({lead: id});
       res.status(200).json(events);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -102,9 +107,13 @@ class ProgramController {
   }
  static async createCommand(req, res) {
   try {
-    const { command_type, details } = req.body;
+    const adminId = req.body.admin; 
+    const leadId = req.body.leadId;
+    const { 
+      command_type, details, date,prix,note,TVA,
+    } = req.body;
 
-    const newCommand = new Command({ command_type, details });
+    const newCommand = new Command({ admin: adminId, lead: leadId, command_type, details, date,prix,note,TVA });
     await newCommand.save();
 
     res.status(201).json(newCommand);
@@ -114,8 +123,12 @@ class ProgramController {
   }
  }
  static async getAllCommands (req, res) {
+  const { id } = req.params; // Get leadId from query parameter
   try {
-    const commands = await Command.find().sort({ createdAt: -1 });
+
+    const commands = await Command.find({ lead: id });
+    console.log("Commands:", commands);
+
     res.status(200).json(commands);
   } catch (error) {
     console.error("Error fetching commands:", error);

@@ -1,11 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Tabs, Button, Input, Form, Calendar, Row, Col, Select, message } from "antd";
+import {
+  Tabs,
+  Button,
+  Input,
+  Form,
+  Calendar,
+  Row,
+  Col,
+} from "antd";
 import { jwtDecode } from "jwt-decode";
 import { DeleteOutlined } from "@ant-design/icons";
 import CalendarEvents from "../components/CalendarEvents";
 import Command from "../components/Command";
+import Panier from "./Panier";
 
 const { TabPane } = Tabs;
 
@@ -21,13 +30,12 @@ const LeadDetailsPage = () => {
   const [comments, setComments] = useState([]);
   const token = localStorage.getItem("token");
   const [selectedDate, setSelectedDate] = useState(null);
-  const [commands, setCommands] = useState([]);
 
 
   const onDateSelect = (date) => {
     setSelectedDate(date);
     form.setFieldsValue({
-      event_date: date.format('YYYY-MM-DD'),  // Set selected date in the form field
+      event_date: date.format("YYYY-MM-DD"), // Set selected date in the form field
     });
   };
 
@@ -43,16 +51,7 @@ const LeadDetailsPage = () => {
     }
   };
 
-  const handleFormSubmitCommand = async (values) => {
-    try {
-      const response = await axios.post("/command", values);
-      setCommands([response.data, ...commands]); // Add new command to the state
-      message.success("Commande ajoutée avec succès !");
-    } catch (error) {
-      console.error("Error adding command:", error);
-      message.error("Erreur lors de l'ajout de la commande.");
-    }
-  }
+
 
   const handleFormSubmitCalendar = async (values) => {
     const token = localStorage.getItem("token");
@@ -62,15 +61,16 @@ const LeadDetailsPage = () => {
       alert("User not authenticated");
       return;
     }
-  
+
     // Use userId as adminId (based on the decoded token)
     const adminId = decodedToken.userId; // Use userId here
-  
+
     const eventData = {
-      ...values,   // This includes event_date, event_time, objective, and comment
-      admin: adminId,  // Add the userId as the admin field
+      ...values, // This includes event_date, event_time, objective, and comment
+      admin: adminId, // Add the userId as the admin field
+      leadId: id, // Add the leadId to the event
     };
-  
+
     try {
       const response = await axios.post("/events", eventData, {
         headers: {
@@ -84,7 +84,6 @@ const LeadDetailsPage = () => {
       // Handle error
     }
   };
-  
 
   const handleTabChange = (key) => {
     setActiveTab(key);
@@ -494,62 +493,19 @@ const LeadDetailsPage = () => {
                 <Col span={12}>
                   <Calendar onSelect={onDateSelect} fullscreen={true} />
                 </Col>
-              </Row>   <CalendarEvents />
+              </Row>{" "}
+              <CalendarEvents />
             </TabPane>
-            <TabPane tab="Commands" key="5">
-  <Row gutter={24}>
-    {/* Left Column for Command Form */}
-    <Col span={12}>
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold text-gray-800">
-          Ajouter une Commande
-        </h2>
-
-        {/* Command Form */}
-        <Form
-          layout="vertical"
-          onFinish={handleFormSubmitCommand}
-          className="space-y-4"
-        >
-          {/* Type of Command */}
-          <Form.Item
-            label="Type de Commande"
-            name="command_type"
-            rules={[{ required: true, message: "Type de commande est requis" }]}
-          >
-            <Select placeholder="Sélectionnez un type">
-              <Select.Option value="devis">Devis</Select.Option>
-              <Select.Option value="contract">Contrat</Select.Option>
-            </Select>
-          </Form.Item>
-
-          {/* Additional Details */}
-          <Form.Item
-            label="Détails"
-            name="details"
-            rules={[{ required: true, message: "Les détails sont requis" }]}
-          >
-            <Input.TextArea rows={4} placeholder="Ajoutez les détails ici" />
-          </Form.Item>
-
-          {/* Submit Button */}
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-          >
-            Ajouter Commande
-          </Button>
-        </Form>
-      </div>
-    </Col>
-
-    {/* Right Column for Displaying Commands */}
-    <Col span={12}>
-    <Command />
-    </Col>
-  </Row>
-</TabPane>
+            <TabPane tab="Panier" key="5">
+            <div className="space-y-4">
+                  <Panier />   
+            </div>
+            </TabPane>
+            <TabPane tab="Commande" key="6">
+            <div className="space-y-4">
+                  <Command />   
+            </div>
+            </TabPane>
           </Tabs>
         </div>
       </div>
@@ -628,11 +584,7 @@ const LeadDetailsPage = () => {
                   <input
                     type="text"
                     name="request_lastname"
-                    value={
-                      formData.request_lastname ||
-                   
-                      ""
-                    }
+                    value={formData.request_lastname || ""}
                     onChange={handleInputChange}
                     className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Enter Lead prenom"
@@ -640,19 +592,15 @@ const LeadDetailsPage = () => {
                 </div>
               </div>
 
-            
-
               <div className="flex gap-4">
                 <div className="flex flex-col gap-2 w-full">
                   <label className="text-lg font-medium text-gray-700">
-                  Contacter
+                    Contacter
                   </label>
                   <input
                     type="text"
                     name="initial"
-                    value={
-                      formData.initial || "-"
-                    }
+                    value={formData.initial || "-"}
                     onChange={handleInputChange}
                     className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Enter raison de contact"
@@ -660,21 +608,17 @@ const LeadDetailsPage = () => {
                 </div>
                 <div className="flex flex-col gap-2 w-full">
                   <label className="text-lg font-medium text-gray-700">
-                  Besoin
+                    Besoin
                   </label>
                   <input
                     type="text"
                     name="information_request"
-                    value={
-                      formData.information_request ||
-                      ""
-                    }
+                    value={formData.information_request || ""}
                     onChange={handleInputChange}
                     className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Enter Lead's besoin"
                   />
                 </div>
-                
               </div>
               <div className="flex gap-4">
                 <div className="flex flex-col gap-2 w-full">
@@ -684,17 +628,12 @@ const LeadDetailsPage = () => {
                   <input
                     type="text"
                     name="request_who"
-                    value={
-                      formData.request_who ||
-                    
-                      ""
-                    }
+                    value={formData.request_who || ""}
                     onChange={handleInputChange}
                     className="w-full border-2 border-gray-300 rounded-lg p-3 text-lg focus:ring-2 focus:ring-blue-500 transition-all"
                     placeholder="Enter Campus Name"
                   />
                 </div>
-           
               </div>
 
               {/* Action Buttons */}

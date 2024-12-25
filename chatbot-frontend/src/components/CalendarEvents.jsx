@@ -1,25 +1,34 @@
+
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const CalendarEvents = () => {
   const [event, setEvent] = useState(null);
+  const { id } = useParams(); // Assuming leadId is part of the route parameter
 
   useEffect(() => {
-    // Fetch the most recent event from the backend
-    const fetchRecentEvent = async () => {
+    // Fetch events related to the lead
+    const fetchEvent = async () => {
       try {
-        const response = await axios.get("/events");
-        const recentEvent = response.data;
-        console.log("Recent Event:", recentEvent);
-        setEvent(recentEvent);
+        const response = await axios.get(`/events/${id}`); // Make sure the URL is correct
+
+        console.log("Fetched Event:", response.data);
+
+        if (response.data) {
+          setEvent(response.data); // Directly set the event data as it's a single object
+        } else {
+          console.log("No event found for this lead");
+          setEvent(null); // Set to null if no event is found
+        }
       } catch (error) {
-        console.error("Error fetching the recent event:", error);
+        console.error("Error fetching the event:", error);
       }
     };
-  
-    fetchRecentEvent();
-  }, []);
-  
+
+    fetchEvent();
+  }, [id]); // Add `id` as a dependency to refetch if it changes
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">

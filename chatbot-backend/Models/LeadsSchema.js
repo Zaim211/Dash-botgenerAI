@@ -1,13 +1,12 @@
 const mongoose = require("mongoose");
 
 const commentSchema = new mongoose.Schema({
-    text: { type: String, required: true },
-    addedBy: {
-      name: { type: String, required: true }, // Ensure `name` is marked as required
-    },
-    addedAt: { type: Date, default: Date.now },
-  });
-  
+  text: { type: String, required: true },
+  addedBy: {
+    name: { type: String, required: true }, // Ensure `name` is marked as required
+  },
+  addedAt: { type: Date, default: Date.now },
+});
 
 const chatSchema = new mongoose.Schema(
   {
@@ -37,20 +36,20 @@ const chatSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-  information_request: {
-    type: String,
-    default: "",
-  },
-  request_who: {
-    type: String,
-    default: "",
-  },
-  type: { type: String, default: "all" },
+    information_request: {
+      type: String,
+      default: "",
+    },
+    request_who: {
+      type: String,
+      default: "",
+    },
+    type: { type: String, default: "all" },
     verification_phone: { type: String, default: "" },
     verification_email: { type: String, default: "" },
     commentaires: [commentSchema],
-    commercial: { type: mongoose.Schema.Types.ObjectId, ref: 'Commercial' },
-    manager: { type: mongoose.Schema.Types.ObjectId, ref: 'Manager' },
+    commercial: { type: mongoose.Schema.Types.ObjectId, ref: "Commercial" },
+    manager: { type: mongoose.Schema.Types.ObjectId, ref: "Manager" },
   },
   { timestamps: true }
 );

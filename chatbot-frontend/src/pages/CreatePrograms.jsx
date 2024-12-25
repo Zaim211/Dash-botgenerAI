@@ -130,7 +130,7 @@ const CreatePrograms = () => {
   }
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Programmes</h1>
+      <h1 className="text-2xl font-bold mb-4">Offres</h1>
 
       <Form
         className="space-y-4 p-4 bg-white rounded-lg shadow-md"
@@ -138,7 +138,7 @@ const CreatePrograms = () => {
         form={form}
         layout="vertical"
       >
-        <p className="text-lg font-semibold mb-4">Création de programmes</p>
+        <p className="text-lg font-semibold mb-4">Création des offres</p>
 
         <Form.Item label="Image" name="imageUrl">
           <Upload {...uploadProps}>
@@ -172,7 +172,7 @@ const CreatePrograms = () => {
         )}
 
         <Form.Item
-          label="Titre de programme"
+          label="Titre d'offre"
           name="title"
           rules={[{ required: true, message: "Please input the title!" }]}
         >
@@ -184,7 +184,7 @@ const CreatePrograms = () => {
         </Form.Item>
 
         <Form.Item
-          label="Description de programme"
+          label="Description d'offre"
           name="mainText"
           rules={[{ required: true, message: "Please input the main text!" }]}
         >

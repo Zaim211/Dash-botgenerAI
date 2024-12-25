@@ -94,7 +94,8 @@ class DataController {
         addedBy: { name },
         addedAt: new Date(),
       };
-      lead.commentaires.push(newComment);
+      // lead.commentaires.push(newComment);
+      lead.commentaires.unshift(newComment);
 
       // Sauvegarder le lead avec le nouveau commentaire
       await lead.save();

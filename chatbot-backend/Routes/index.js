@@ -87,10 +87,10 @@ router.delete('/program/:id', ProgramController.deleteProgramById);
 // calendar routes
 
 router.post('/events', ProgramController.createEvent);
-router.get('/events', ProgramController.getAllEvents);
+router.get('/events/:id', ProgramController.getAllEvents);
 
 // Command routes
 router.post('/command', ProgramController.createCommand);
-router.get('/command', ProgramController.getAllCommands);
+router.get('/command/:id', ProgramController.getAllCommands);
 
 module.exports = router;

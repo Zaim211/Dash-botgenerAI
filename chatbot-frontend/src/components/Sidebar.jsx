@@ -106,7 +106,7 @@ const SideBar = () => {
           style={{ fontSize: "23px", marginRight: "10px" }}
         />
       ),
-      label: "Programmes",
+      label: "Offres",
       role: ["Admin", "Manager"],
     },
     {
