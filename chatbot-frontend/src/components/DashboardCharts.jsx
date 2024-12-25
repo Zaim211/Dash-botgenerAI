@@ -27,11 +27,10 @@ import {
 const DashboardCharts = ({ totalLeads, categoryCounts }) => {
     const pieChartDataLeft = {
       labels: [
-        "Étudiant",
-        "Demandeur d'emploi",
-        "Salarié en activité",
-        "Parent",
-        "Entreprise",
+        "Auto_Entrepreneur",
+        "PME",
+        "Artisan",
+        "Autre"
       ],
       datasets: [
         {
