@@ -292,9 +292,9 @@ const LeadDetailsPage = () => {
                         <div className="flex justify-between">
                           <div>
                             <p className="text-gray-800">{comment.text}</p>
-                            <p className="text-gray-600 text-sm">
+                            {/* <p className="text-gray-600 text-sm">
                               Added by: {comment.addedBy?.name || "Unknown"}
-                            </p>
+                            </p> */}
                             <p className="text-gray-600 text-sm">
                               {comment.addedAt
                                 ? new Date(comment.addedAt).toLocaleString()
