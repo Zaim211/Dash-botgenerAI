@@ -28,7 +28,10 @@ ChartJS.register(
 
 const DashboardPourcentage = ({ courseDetails }) => {
     const barChartData = {
-      labels: ["Master", "Licence", "Certificat"],
+      labels: [ "Auto_Entre",
+        "PME",
+        "Artisan",
+        "Autre"],
       datasets: [
         {
           // label: "Pourcentage",

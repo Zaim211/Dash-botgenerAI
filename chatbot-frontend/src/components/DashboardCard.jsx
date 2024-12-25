@@ -38,110 +38,6 @@ import AdsCard from "./AdsCard";
 import DeviceCard from "./DeviceCard";
 import Statistics from "./Statistics";
 
-// const TauxCapture = () => {
-
-//   const [chatData, setChatData] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState(null);
-//   const [clientCount, setClientCount] = useState(0);
-//   const [prospectCount, setProspectCount] = useState(0);
-
-//   useEffect(() => {
-//     const getUserData = async () => {
-//       try {
-//         const response = await axios.get("/data");
-//         console.log("Fetched data leads:", response.data);
-        
-//         setChatData(response.data.chatData);
-  
-//         // Assuming response.data.chatData is an array of leads
-//         const clientCount = response.data.chatData.filter(lead => lead.type === 'client').length;
-//         const prospectCount = response.data.chatData.filter(lead => lead.type === 'prospect').length;
-  
-//         // Set the counts into state or log them
-//         setClientCount(clientCount); // Define state for client count
-//         setProspectCount(prospectCount); // Define state for prospect count
-  
-//         console.log("Client Count:", clientCount);
-//         console.log("Prospect Count:", prospectCount);
-//       } catch (err) {
-//         console.error("Failed to fetch data:", err);
-//         setError("Failed to fetch data");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     getUserData();
-//   }, []);
-  
-//   const totalPercent = clientCount + prospectCount;
-
-//   const data = {
-//     labels: ["Total"],
-//     datasets: [
-//       {
-//         data: [totalPercent],
-//         backgroundColor: ["#4CAF50"],
-//         hoverBackgroundColor: ["#66BB6A"],
-//       },
-//     ],
-//   };
-//   const options = {
-//     maintainAspectRatio: false,
-//     plugins: {
-//       datalabels: {
-//         display: true,
-//         color: "#ffffff",
-//         font: {
-//           weight: "bold",
-//           size: 30,
-//         },
-//         formatter: () => `${totalPercent}%`,
-//       },
-//       tooltip: {
-//         enabled: false,
-//       },
-//       legend: {
-//         display: false,
-//       },
-//     },
-//     cutout: "80%", // Makes the pie chart into a donut shape
-//   };
-
-//   return (
-//     <div className="bg-white rounded-lg p-6 shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] flex flex-col items-center">
-//       <h1 className="text-lg font-semibold text-gray-700 mb-6">
-//         Taux de captation
-//       </h1>
-//       <div className="relative w-40 h-40 mb-8">
-//         <Pie data={data} options={options} />
-//         <div className="absolute inset-0 flex items-center justify-center">
-//           <span className="text-2xl font-bold text-gray-700">
-//             {totalPercent}%
-//           </span>
-//         </div>
-//       </div>
-//       <div className="flex justify-between w-full mt-8">
-//         <div className="">
-//           <h1 className="text-sm font-semibold text-gray-500">
-//             Contact disqualifié
-//           </h1>
-//           <p className="text-center text-md font-semibold text-gray-600">
-//             {prospectCount}
-//           </p>
-//         </div>
-//         <p className="text-md text-center font-semibold text-gray-500">
-//           <h1 className="text-sm font-semibold text-gray-500">
-//             Contact qualifié
-//           </h1>
-//           <p className="text-center text-md font-semibold text-gray-600">
-//             {clientCount}
-//           </p>
-//         </p>
-//       </div>
-//     </div>
-//   );
-// };
 
 const TauxCapture = () => {
   const [chatData, setChatData] = useState([]);
@@ -261,53 +157,19 @@ const DashboardCards = () => {
   const [averageDailyLeads, setAverageDailyLeads] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-
-  // const getAdMetrics = async () => {
-  //   const metricsUrl = `https://graph.facebook.com/v13.0/${AD_CAMPAIGN_ID}/insights?access_token=${FACEBOOK_ACCESS_TOKEN}`;
-    
-  //   try {
-  //     const response = await axios.get(metricsUrl);
-  //     console.log("Ad Metrics: ", response.data);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error("Failed to fetch ad metrics", error);
-  //   }
-  // };
-
-  // const [metrics, setMetrics] = useState(null);
-  // const [loading, setLoading] = useState(true);
-
-  // useEffect(() => {
-  //   const fetchAdMetrics = async () => {
-  //     try {
-  //       const response = await axios.get('/ad-metrics');
-  //       setMetrics(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching ad metrics", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchAdMetrics();
-  // }, []);
-
   
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
     const filteredLeads = leads.filter(
       (lead) =>
-        (lead.not_talk && lead.not_talk.includes(category)) ||
-        (lead.remmberme && lead.remmberme.includes(category)) ||
-        (lead.job_seeker && lead.job_seeker.includes(category)) ||
-        (lead.company && lead.company.includes(category))
+        (lead.request_who && lead.request_who.includes(category)) 
     );
 
-    const courseCounts = { Master: 0, Licence: 0, Certificat: 0, Autre: 0 };
-
+    const courseCounts = {  Auto_Entrepreneur: 0, Artisan: 0, PME: 0, Autre: 0 };
+   
     filteredLeads.forEach((lead) => {
-      const course = lead.course_details;
+      const course = lead.request_who;
       if (courseCounts[course] !== undefined) {
         courseCounts[course] += 1;
       }
@@ -316,10 +178,11 @@ const DashboardCards = () => {
     const totalCourses = filteredLeads.length;
     const newCourseDetails = [
       (courseCounts.Master / totalCourses) * 100 || 0,
-      (courseCounts.Licence / totalCourses) * 100 || 0,
-      (courseCounts.Certificat / totalCourses) * 100 || 0,
+      (courseCounts.PME / totalCourses) * 100 || 0,
+      (courseCounts.Auto_Entrepreneur / totalCourses) * 100 || 0,
       (courseCounts.Autre / totalCourses) * 100 || 0,
     ];
+   
 
     setCourseDetails(newCourseDetails);
   };
@@ -351,20 +214,16 @@ const DashboardCards = () => {
         ).length;
 
         const categories = [
-          "Étudiant",
-          "Demandeur d'emploi",
-          "Salarié en activité",
-          "Un parent",
-          "Une entreprise",
+          "Auto_Entrepreneur",
+           "PME",
+           "Artisan",
+           "Autre"
         ];
         const counts = categories.map(
           (category) =>
             leadsData.filter(
               (lead) =>
-                (lead.not_talk && lead.not_talk.includes(category)) ||
-                (lead.remmberme && lead.remmberme.includes(category)) ||
-                (lead.job_seeker && lead.job_seeker.includes(category)) ||
-                (lead.company && lead.company.includes(category)) 
+                (lead.request_who && lead.request_who.includes(category)) 
             ).length
         );
 
@@ -379,12 +238,12 @@ const DashboardCards = () => {
   }, []);
 
   const categories = [
-    { label: "Étudiant", color: "bg-blue-500" },
-    { label: "Demandeur d'emploi", color: "bg-yellow-500" },
-    { label: "Salarié en activité", color: "bg-pink-500" },
-    { label: "Un parent", color: "bg-green-500" },
-    { label: "Entreprise", color: "bg-purple-500" },
+    { label: "Auto_Entrepreneur", color: "bg-blue-500" },
+    { label: "PME", color: "bg-yellow-500" },
+    { label: "Artisan", color: "bg-pink-500" },
+    { label: "Autre", color: "bg-green-500" },
   ]
+ 
 
   const prepareChartData = () => {
     const groupedLeads = leads.reduce((acc, lead) => {
@@ -526,31 +385,6 @@ const DashboardCards = () => {
         />
 
         <div className="w-full flex flex-col pb-14 mt-8 space-y-2 bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)]">
-          {/* <div className="flex space-x-2 p-4  mb-2">
-            {[
-              "Étudiant",
-              "Sans emploi",
-              "Salarié en activité",
-              "Un parent",
-              "Entreprise",
-            ].map((category, index) => (
-              <button
-                key={index}
-                className={`py-2 text-sm rounded w-full ${
-                  [
-                    "bg-blue-500",
-                    "bg-yellow-500",
-                    "bg-pink-500",
-                    "bg-green-500",
-                    "bg-purple-500",
-                  ][index]
-                } text-white`}
-                onClick={() => handleCategorySelect(category)}
-              >
-                {category}
-              </button>
-            ))}
-          </div> */}
            <div className="flex space-x-2 p-4 mb-2">
         {categories.map((category, index) => (
           <button

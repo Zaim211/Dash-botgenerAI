@@ -50,7 +50,7 @@ const Home = () => {
         <span className="flex items-center space-x-2 text-sm bg-gray-100 p-2 rounded-md text-gray-500">
           {/* Calendar Icon */}
           <FontAwesomeIcon icon={faCalendarAlt} />
-          <span>{currentMonthRange}</span> {/* Display the month range */}
+          <span>{currentMonthRange}</span>
         </span>
       </div>
       <DashboardCards />
