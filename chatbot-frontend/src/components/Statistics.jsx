@@ -92,7 +92,7 @@ const Statistics = ({
           </p>
         </div>
         <h4 className="text-xs font-semibold text-gray-400  mt-4 text-center">
-          Téléphone
+        Moy Pages Visited Téléphone
         </h4>
       </div>
 
@@ -113,7 +113,7 @@ const Statistics = ({
       </div>
 
       {/* Median Session Time Card */}
-      <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] p-8">
+      {/* <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] p-8">
         <div className="flex flex-col items-center justify-center">
           <FontAwesomeIcon
             icon={faClock}
@@ -126,10 +126,10 @@ const Statistics = ({
         <h4 className="text-xs font-semibold mt-4 text-gray-400 mb-2 text-center">
          Temps médian
         </h4>
-      </div>
+      </div> */}
 
       {/* Credit Score Card */}
-      <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] p-8">
+      {/* <div className="bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)] p-8">
         <div className="flex flex-col items-center justify-center">
           <FontAwesomeIcon
             icon={faCreditCard}
@@ -142,7 +142,7 @@ const Statistics = ({
         <h4 className="text-xs font-semibold text-gray-400 mt-4 mb-2 text-center">
           Credit Score
         </h4>
-      </div>
+      </div> */}
     </div>
   );
 };
