@@ -55,14 +55,15 @@ useEffect(() => {
         const response = await axios.get("/data");
         console.log("Fetched data leads:", response.data);
         console.log("Fetched leads:", response.data.chatData); 
-        if (response.data && response.data.chatData) {
-          const filteredData = response.data.chatData.filter(chat => chat.type === "nouveau");
-          setChatData(filteredData);
-          console.log("Fetched leads:", filteredData);
-        } else {
-          setChatData([]); // Fallback to an empty array
-          console.error("chatData is missing in the response");
-        }
+        // if (response.data && response.data.chatData) {
+        //   const filteredData = response.data.chatData.filter(chat => chat.type === "all" || chat.type === "nouveau");
+        //   setChatData(filteredData);
+        //   console.log("Fetched leads:", filteredData);
+        // } else {
+        //   setChatData([]); // Fallback to an empty array
+        //   console.error("chatData is missing in the response");
+        // }
+        setChatData(response.data.chatData);
       } catch (err) {
         console.error("Failed to fetch data:", err);
         setError("Failed to fetch data");
@@ -72,7 +73,65 @@ useEffect(() => {
     };
     getUserData();
   }, []);
-  
+useEffect(() => {
+  const getUserData = async () => {
+    try {
+      const response = await axios.get("/data");
+      console.log("Fetched data leads:", response.data);
+      console.log("Fetched leads:", response.data.chatData); 
+
+      if (response.data && response.data.chatData) {
+        // Filter chatData to get "all" or "nouveau" types
+        const filteredData = response.data.chatData.filter(chat => chat.type === "all" || chat.type === "nouveau");
+
+        // Check if any of the filtered data contains the 'commercial' field
+        const commercialExists = filteredData.some(chat => chat.commercial);
+
+        if (!commercialExists) {
+          setChatData(filteredData); // Set filtered data if 'commercial' doesn't exist
+          console.log("Fetched leads (without commercial):", filteredData);
+        } else {
+          // If 'commercial' exists, do something else if needed (e.g., handle that case)
+          console.log("Commercial data exists, handle accordingly");
+        }
+      } else {
+        setChatData([]); // Fallback to an empty array if chatData is missing
+        console.error("chatData is missing in the response");
+      }
+    } catch (err) {
+      console.error("Failed to fetch data:", err);
+      setError("Failed to fetch data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  getUserData();
+}, []);
+
+  // useEffect(() => {
+//     const getUserData = async () => {
+//       try {
+//         const response = await axios.get("/data");
+//         console.log("Fetched data leads:", response.data);
+//         console.log("Fetched leads:", response.data.chatData); 
+//         if (response.data && response.data.chatData) {
+//           const filteredData = response.data.chatData.filter(chat => chat.type === "all" || chat.type === "nouveau");
+//           setChatData(filteredData);
+//           console.log("Fetched leads:", filteredData);
+//         } else {
+//           setChatData([]); // Fallback to an empty array
+//           console.error("chatData is missing in the response");
+//         }
+//       } catch (err) {
+//         console.error("Failed to fetch data:", err);
+//         setError("Failed to fetch data");
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     getUserData();
+//   }, []);
   useEffect(() => {
     fetchCommercials();
   }, []);
