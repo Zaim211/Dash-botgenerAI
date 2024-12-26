@@ -66,7 +66,7 @@ useEffect(() => {
       }
 
       // Activate the selected ad
-      await axios.post("http://localhost:3000/pub", selectedPub);
+      await axios.post("https://chatbot-ai-e081.onrender.com/pub", selectedPub);
 
       setActivePubId(pubId); // Set the active publicité ID
       message.success("Publicité activated successfully!");
