@@ -177,10 +177,10 @@ const DashboardCards = () => {
 
     const totalCourses = filteredLeads.length;
     const newCourseDetails = [
-      (courseCounts.Artisan / totalCourses) || 0,
-      (courseCounts.PME / totalCourses)  || 0,
-      (courseCounts.Auto_Entrepreneur / totalCourses)  || 0,
-      (courseCounts.Autre / totalCourses) || 0,
+      (courseCounts.Artisan) || 0,
+      (courseCounts.PME)  || 0,
+      (courseCounts.Auto_Entrepreneur)  || 0,
+      (courseCounts.Autre) || 0,
     ];
    
 
