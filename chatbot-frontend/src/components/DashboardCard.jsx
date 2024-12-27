@@ -166,7 +166,7 @@ const DashboardCards = () => {
         (lead.request_who && lead.request_who.includes(category)) 
     );
 
-    const courseCounts = {  Auto_Entrepreneur: 0, Artisan: 0, PME: 0, Autre: 0 };
+    const courseCounts = {  Auto_Entrepreneur: 0, PME: 0,  Artisan: 0, Autre: 0 };
    
     filteredLeads.forEach((lead) => {
       const course = lead.request_who;
@@ -177,10 +177,10 @@ const DashboardCards = () => {
 
     const totalCourses = filteredLeads.length;
     const newCourseDetails = [
-      (courseCounts.Master / totalCourses) * 100 || 0,
-      (courseCounts.PME / totalCourses) * 100 || 0,
-      (courseCounts.Auto_Entrepreneur / totalCourses) * 100 || 0,
-      (courseCounts.Autre / totalCourses) * 100 || 0,
+      (courseCounts.Artisan / totalCourses) || 0,
+      (courseCounts.PME / totalCourses)  || 0,
+      (courseCounts.Auto_Entrepreneur / totalCourses)  || 0,
+      (courseCounts.Autre / totalCourses) || 0,
     ];
    
 

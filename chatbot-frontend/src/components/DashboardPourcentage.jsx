@@ -1,4 +1,3 @@
-import { faDesktop, faMobileAlt } from "@fortawesome/free-solid-svg-icons";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -28,7 +27,8 @@ ChartJS.register(
 
 const DashboardPourcentage = ({ courseDetails }) => {
     const barChartData = {
-      labels: [ "Auto_Entre",
+      labels: [ 
+        "Auto_Entre",
         "PME",
         "Artisan",
         "Autre"],
