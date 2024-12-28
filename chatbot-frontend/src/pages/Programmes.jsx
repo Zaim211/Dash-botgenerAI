@@ -179,7 +179,7 @@ const Programmes = () => {
                 <div className="flex-grow">
                   <Card.Meta
                     title={<span className="font-semibold text-2xl">{pro.title}</span>}
-                    description={<p className="text-md text-gray-900">{pro.mainText}</p>}
+                    description={<p className="text-lg text-gray-900">{pro.mainText}</p>}
                   />
                 </div>
                 <div className="mt-4 flex justify-between">
