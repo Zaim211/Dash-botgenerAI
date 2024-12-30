@@ -66,7 +66,7 @@ useEffect(() => {
       }
 
       // Activate the selected ad
-      await axios.post("https://chatbot-ai-e081.onrender.com/pub", selectedPub);
+      await axios.post("http://localhost:300/pub", selectedPub);
 
       setActivePubId(pubId); // Set the active publicité ID
       message.success("Publicité activated successfully!");
@@ -85,7 +85,7 @@ useEffect(() => {
       }
 
       // Deactivate the publicité on the server
-      await axios.delete(`https://chatbot-ai-e081.onrender.com/pub/${pubId}`);
+      await axios.delete(`http://localhost:3000/pub/${pubId}`);
 
       // Update state
       setPubs((prevPubs) => prevPubs.filter((p) => p._id !== pubId));

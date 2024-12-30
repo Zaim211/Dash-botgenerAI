@@ -56,7 +56,6 @@ const LeadDetailsPage = () => {
   const handleFormSubmitCalendar = async (values) => {
     const token = localStorage.getItem("token");
     const decodedToken = token ? jwtDecode(token) : null;
-    console.log("Decoded Token:", decodedToken);
     if (!decodedToken) {
       alert("User not authenticated");
       return;
