@@ -98,7 +98,7 @@ class ProgramController {
     const { id } = req.params; // Get leadId from query parameter
     console.log("Lead ID:", id);
     try {
-      const events = await Event.findOne({lead: id});
+      const events = await Event.find({ lead: id });
       res.status(200).json(events);
     } catch (error) {
       console.error("Error fetching events:", error);
