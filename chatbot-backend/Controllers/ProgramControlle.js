@@ -74,8 +74,7 @@ class ProgramController {
     try {
       const adminId = req.body.admin; 
       const leadId = req.body.leadId;
-      console.log("Admin ID:", adminId);
-      console.log("Lead ID:", leadId);
+
       const { event_date, event_time, objective, comment } = req.body;
   
       const newEvent = new Event({
@@ -96,15 +95,27 @@ class ProgramController {
   }
   static async getAllEvents(req, res) {
     const { id } = req.params; // Get leadId from query parameter
-    console.log("Lead ID:", id);
+  
     try {
-      const events = await Event.find({ lead: id });
+      const events = await Event.find({ lead: id }).sort({ event_date: -1 });;
       res.status(200).json(events);
     } catch (error) {
       console.error("Error fetching events:", error);
       res.status(500).json({ message: "Error fetching events", error });
     }
   }
+  static async deleteEvent(req, res) {
+    try {
+      const { id } = req.params;
+      await Event.findByIdAndDelete(id);
+      res.status(200).json({ message: "Event deleted successfully." });
+    }
+    catch (error) {
+      console.error("Error deleting event:", error);
+      res.status(500).json({ message: "Failed to delete event." });
+    }
+  }
+
  static async createCommand(req, res) {
   try {
     const adminId = req.body.admin; 
