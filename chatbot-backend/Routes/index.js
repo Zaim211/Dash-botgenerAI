@@ -88,6 +88,7 @@ router.delete('/program/:id', ProgramController.deleteProgramById);
 
 router.post('/events', ProgramController.createEvent);
 router.get('/events/:id', ProgramController.getAllEvents);
+router.delete('/event/:id', ProgramController.deleteEvent);
 
 // Command routes
 router.post('/command', ProgramController.createCommand);
