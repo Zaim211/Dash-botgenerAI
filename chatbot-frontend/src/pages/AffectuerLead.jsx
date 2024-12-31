@@ -87,7 +87,7 @@ useEffect(() => {
         // Check if any of the filtered data contains the 'commercial' field
         const commercialExists = filteredData.some(chat => chat.commercial);
 
-        if (!commercialExists) {
+        if (commercialExists) {
           setChatData(filteredData); // Set filtered data if 'commercial' doesn't exist
           console.log("Fetched leads (without commercial):", filteredData);
         } else {
@@ -267,31 +267,41 @@ useEffect(() => {
     return <Alert message="Error" description={error} type="error" showIcon />;
   
   const columns = [
+    // {
+    //   title: "Prénom",
+    //   key: "request_lastname",
+    //   dataIndex: "request_lastname",
+    //   render: (text, record) => (
+    //     <div
+    //       className="cursor-pointer"
+    //       onClick={() => handleLeadClick(record)}
+    //     >
+    //       <div>{record.request_lastname || "-"}</div>
+         
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   title: "Nom",
+    //   key: "request_name",
+    //   dataIndex: "request_name",
+    //   render: (text, record) => (
+    //     <div
+    //       className="cursor-pointer"
+    //       onClick={() => handleLeadClick(record)}
+    //     >
+    //       <div>{record.request_name || "-"}</div>
+         
+    //     </div>
+    //   ),
+    // },
     {
-      title: "Prénom",
+      title: "Prénom et Nom", // Changed title to "Prenom and Nom"
       key: "request_lastname",
-      dataIndex: "request_lastname",
+      dataIndex: "request_fullname",
       render: (text, record) => (
-        <div
-          className="cursor-pointer"
-          onClick={() => handleLeadClick(record)}
-        >
-          <div>{record.request_lastname || "-"}</div>
-         
-        </div>
-      ),
-    },
-    {
-      title: "Nom",
-      key: "request_name",
-      dataIndex: "request_name",
-      render: (text, record) => (
-        <div
-          className="cursor-pointer"
-          onClick={() => handleLeadClick(record)}
-        >
-          <div>{record.request_name || "-"}</div>
-         
+        <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
+          <div>{`${record.request_lastname || "-"} ${record.request_name || "-"}`}</div>
         </div>
       ),
     },
@@ -481,7 +491,13 @@ useEffect(() => {
           })),
         ]}
         rowKey={(record) => record._id}
-        pagination={false}
+        // pagination={false}
+        pagination={{
+          current: currentPage,
+          pageSize,
+          total: chatData.length,
+          onChange: (page) => setCurrentPage(page),
+        }}
         bordered
         className="custom-table"
         rowSelection={rowSelection}

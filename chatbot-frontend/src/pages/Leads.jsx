@@ -146,23 +146,33 @@ const Leads = () => {
   };
 
   const columns = [
+    // {
+    //   title: "Prénom",
+    //   key: "request_lastname",
+    //   dataIndex: "request_lastname",
+    //   render: (text, record) => (
+    //     <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
+    //       <div>{record.request_lastname || "-"}</div>
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   title: "Nom",
+    //   key: "request_name",
+    //   dataIndex: "request_name",
+    //   render: (text, record) => (
+    //     <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
+    //       <div>{record.request_name || "-"}</div>
+    //     </div>
+    //   ),
+    // },
     {
-      title: "Prénom",
+      title: "Prénom et Nom", // Changed title to "Prenom and Nom"
       key: "request_lastname",
-      dataIndex: "request_lastname",
+      dataIndex: "request_fullname",
       render: (text, record) => (
         <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
-          <div>{record.request_lastname || "-"}</div>
-        </div>
-      ),
-    },
-    {
-      title: "Nom",
-      key: "request_name",
-      dataIndex: "request_name",
-      render: (text, record) => (
-        <div className="cursor-pointer" onClick={() => handleLeadClick(record)}>
-          <div>{record.request_name || "-"}</div>
+          <div>{`${record.request_lastname || "-"} ${record.request_name || "-"}`}</div>
         </div>
       ),
     },
