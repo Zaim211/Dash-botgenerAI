@@ -77,6 +77,7 @@ const LeadDetailsPage = () => {
         },
       });
       console.log("Event added successfully:", response.data);
+      form.resetFields(); // Reset form fields
       // Handle successful submission
     } catch (error) {
       console.error("Error adding event:", error);

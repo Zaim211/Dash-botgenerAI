@@ -78,7 +78,7 @@ const Leads = () => {
 
       console.log("Chat deleted successfully:", response.data);
       setChatData(chatData.filter((lead) => lead._id !== id));
-      message.success("Coach deleted successfully");
+      message.success("Chat deleted successfully");
     } catch (error) {
       console.error("Error deleting coach:", error);
       message.error("Failed to delete coach");
@@ -364,10 +364,6 @@ const Leads = () => {
 
       <div className="bg-white rounded-lg shadow-md p-4">
         <Table
-          // dataSource={dataToDisplay.slice(
-          //   (currentPage - 1) * pageSize,
-          //   currentPage * pageSize
-          // )}
           columns={[
             ...columns.map((col) => ({
               ...col,
