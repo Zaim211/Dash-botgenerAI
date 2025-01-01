@@ -385,7 +385,7 @@ const DashboardCards = () => {
         />
 
         <div className="w-full flex flex-col pb-14 mt-8 space-y-2 bg-white rounded-lg shadow-[0px_2px_6px_rgba(0,0,0,0.1),0px_8px_24px_rgba(0,0,0,0.15)]">
-           <div className="flex space-x-1 p-2 mb-2">
+           <div className="flex gap-2 p-2 mb-2">
         {categories.map((category, index) => (
           <button
             key={index}
