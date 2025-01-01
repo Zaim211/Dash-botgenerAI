@@ -522,7 +522,7 @@ const LeadDetailsPage = () => {
           onClick={() => setIsModalOpen(true)}
           className="bg-purple-800 hover:bg-purple-900 text-white font-semibold py-2 px-4 rounded"
         >
-          Modify Lead
+          Modifier Lead
         </button>
       </div>
 
