@@ -38,7 +38,7 @@ app.use(cors({
 app.use('/', router);
 
 
-const PORT = process.env.API_PORT || 8000;
+const PORT = process.env.API_PORT;
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur le port ${PORT}`);
 });
