@@ -27,7 +27,7 @@ app.use(cookieParser());
 
 // middleware to connect with frontend
 app.use(cors({
-    origin: ["https://chatbot-ai-wine.vercel.app", "https://crm-sales-woad.vercel.app"],
+    origin: "https://crm-sales-woad.vercel.app",
     credentials: true,
 }));
 
