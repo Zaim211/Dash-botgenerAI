@@ -15,7 +15,7 @@ const Publicités = () => {
 useEffect(() => {
   const fetchAds = async () => {
     try {
-      const response = await axios.get("https://chatbot-ai-e081.onrender.com/pub");
+      const response = await axios.get("http://localhost:3000/pub");
       console.log("ads:", response.data);
       setPubs(response.data);
     } catch (error) {
@@ -66,7 +66,7 @@ useEffect(() => {
       }
 
       // Activate the selected ad
-      await axios.post("http://localhost:300/pub", selectedPub);
+      await axios.post("http://localhost:3000/pub", selectedPub);
 
       setActivePubId(pubId); // Set the active publicité ID
       message.success("Publicité activated successfully!");

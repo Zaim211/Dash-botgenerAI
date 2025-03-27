@@ -93,29 +93,29 @@ const SignIn = () => {
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <div className="flex items-start">
+              {/* <div className="flex items-start">
                 <div className="flex items-center h-5">
                   <input id="remember" type="checkbox" className="w-4 h-4 border border-gray-300 rounded bg-gray-700 focus:ring-3" />
                 </div>
                 <div className="ml-3 text-sm">
                   <label htmlFor="remember" className="text-black">Se souvenir de moi</label>
                 </div>
-              </div>
-              <Link to="/ForgotPassword">
+              </div> */}
+              {/* <Link to="/ForgotPassword">
                 <span className="text-sm font-medium text-purple-900 hover:underline">Mot de passe oublié?</span>
-              </Link>
+              </Link> */}
             </div>
             <button type="submit" className="w-full text-white bg-purple-900 hover:bg-purple-500 focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
               Se connecter
             </button>
           </form>
 
-          <p className="text-sm font-light text-gray-500 text-center">
+          {/* <p className="text-sm font-light text-gray-500 text-center">
             Vous n'avez pas de compte ?{" "}
             <Link to="/SignUp" className="font-medium text-purple-900 hover:underline">
               Inscrivez-vous
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
       </section>
